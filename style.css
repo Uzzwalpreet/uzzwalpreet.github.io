@@ -1,0 +1,236 @@
+.body {
+    height: 1200px;
+    width: 1200px;
+}
+#Top-Bar{
+    display: flex;
+    justify-content: space-between;
+    border: 2px black solid;
+}
+.page2, .Menu {
+    display: inline-block;
+    background-color: white;
+    height: 40px;
+    margin-left: 80px;
+    margin-right: 160px;
+}
+.page2 a{
+    text-decoration: none;
+    color: grey;
+    padding: 10px;
+}
+.page2 a:hover{
+    color: black;
+}
+.page2 {
+    right: 0;
+    text-align: right;
+    gap: 20px;
+}
+.image-container {
+    position: relative;
+    background-image: url("./images/lawyer.jpg");
+    height: 45%;
+    background-size: cover;
+    border: 2px black solid;
+}
+
+.signup {
+    position: absolute;
+    top: 110px;
+    left: 225px;
+    height: 280px;
+    width: 20%;
+    background-color: rgb(16,60,92);
+    padding-left: 25px;
+    padding-top: 40px;
+}
+.signup p {
+    color: white;
+    margin: 0;
+}
+#first-para {
+    font-size: 10px;
+    font-family: "Open Sans", system-ui;
+    font-weight: 30;
+}
+#second-para {
+    font-size: 25px;
+    font-family: "Open Sans", system-ui;
+}
+.signup i {
+    color: rgb(226, 204, 1);
+    font-size: 10px;
+}
+.form {
+    margin-top: 10px;
+    width: 220px;
+    height: 30px;
+    background: whitesmoke;
+}
+.signup-button {
+    margin-top: 20px;;
+    width: 110px;
+    height: 30px;
+    text-align: center;
+    background: rgb(226, 204, 1);
+}
+.signup-button p {
+    color: black;
+    font-size: 8px;
+    padding-top: 10px;
+    font-family: "Open Sans", system-ui;
+}
+.feature-main {
+    padding-top: 140px;
+    height: 280px;
+    display: flex;
+    flex-direction: row;
+    border: 2px solid red;
+    justify-content: center;
+    gap: 40px; 
+}
+
+.feature {
+    color: grey;
+    font-size: 12px;
+}
+.feature p {
+    color: black;
+    font-size: 15px;
+}
+
+.review {
+    padding-top: 140px;
+    text-align: center;
+    border: 2px solid burlywood;
+    height: 180px;
+    background: rgb(244,244,244);
+    font-size: 18px;
+}
+
+#owner {
+    font-size: 15px;
+    color: gray;
+}
+.bold-text {
+    font-weight: bold;
+    color: black;
+}
+.plan {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+.parallex-image-container {
+    background-image: url("./images/glasses.png");
+    height: 630px;
+    opacity: 0.2;
+    filter: grayscale(100%);
+    background-size: cover;
+    background-position: 53% 47%;
+    background-attachment: fixed;
+
+}
+.plans {
+    border: 2px solid black;
+    padding-top: 50px;
+    justify-content: center;
+    display: flex;
+    flex-direction: row;
+    gap: 40px;
+}
+.grid {
+    width: 200px;
+    height: 300px;
+    position: relative;
+    background-image: 
+        linear-gradient(90deg, rgba(0, 0, 0, 0.1) 0.5px, transparent 0.5px), 
+        linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0.5px, transparent 0.5px); 
+    background-size: 10px 10px; 
+}
+.diamonds {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+        linear-gradient(45deg, transparent 50%, rgba(0, 0, 0, 0.1) 49%, rgba(0, 0, 0, 0.1) 51%, transparent 50%),
+        linear-gradient(-45deg, transparent 50%, rgba(0, 0, 0, 0.1) 49%, rgba(0, 0, 0, 0.1) 51%, transparent 50%);
+    background-size: 20px 20px; 
+    pointer-events: none;
+}
+.basic, .standard, .corporate{
+    text-align: center;
+}
+.plans p{
+    line-height: 40px;
+    padding-top: 20px;
+}
+#price-type1, #price-type2, #price-type3 {
+    line-height: 0.1;
+    padding-top: 20px;
+    margin: 0;
+    text-align: center;
+    font-weight: bold;
+    font-size: 25px;
+}
+.term {
+    line-height: 0.1;
+    padding-top: 20px;
+    margin: 0;
+    text-align: center;
+    font-weight: bold;
+    font-size: 25px;
+}
+.try-app {
+    border: 2px solid red;
+    height: 400px;
+    background-image: url("./images/notebook.jpg");
+    background-size: cover;
+    background-position: 53% 47%;
+    /* background-blend-mode: multiply;
+    background-color: rgb(30, 109, 161); Adding a blue overlay */
+}
+.try-app-text {
+    justify-content: center;
+    align-items: center;
+    padding-top: 180px;
+    position: relative;
+    text-align: center;
+    line-height: 0cm;
+}
+#try-app-text-one {
+    font-size: 20px;
+    color: white;
+}
+#try-app-text-two {
+    font-size: 10px;
+    color: white;
+}
+.social {
+    height: 150px;
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(30, 38, 52);
+    align-items: center;
+    padding-top: 150px;
+}
+.social p{
+    color: white;
+    line-height: 0; 
+    font-size: 12px;
+}
+.social-icons{
+    padding-top: 18px;
+    display: flex;
+    gap: 20px;
+}
+.social img {
+    width: 25px;
+    height: 25px;    
+}
+#social-text-2 {
+    font-family: sans-serif;
+}
