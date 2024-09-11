@@ -5,7 +5,6 @@
 #Top-Bar{
     display: flex;
     justify-content: space-between;
-    border: 2px black solid;
 }
 .page2, .Menu {
     display: inline-block;
@@ -34,7 +33,6 @@
 .image-container {
     position: relative;
     height: 535px;
-    border: 2px black solid;
 }
 
 .image-container::before {
@@ -107,7 +105,6 @@
     height: 280px;
     display: flex;
     flex-direction: row;
-    border: 2px solid red;
     justify-content: center;
     gap: 40px; 
 }
@@ -128,7 +125,6 @@
 .review {
     padding-top: 140px;
     text-align: center;
-    border: 2px solid burlywood;
     height: 180px;
     background: rgb(244,244,244);
     font-size: 18px;
@@ -144,7 +140,8 @@
 }
 .parallex-image-container{
     position: relative;
-    height: 630px;
+    height: 650px;
+    height:90%;
     /* z-index: 2; */
 }
 .parallex-image-container::before {
@@ -169,6 +166,7 @@
     flex-direction: row;
     gap: 40px;
     position: relative;
+    padding-bottom: 50px;
 }
 .plan-affordable {
     text-align: center;
@@ -249,20 +247,37 @@
     margin-left: 80px;
     margin-top: -30px;
 }
+
+
 .try-app {
-    border: 2px solid red;
     height: 400px;
     background-image: url("./images/notebook.jpg");
     background-size: cover;
     background-position: 53% 47%;
+    position: relative;
 }
+
+.try-app::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 51, 102, 0.7); /* Adjust this for the blue color */
+    z-index: 1;
+}
+
 .try-app-text {
+    display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     padding-top: 180px;
     position: relative;
     text-align: center;
     line-height: 0cm;
+    z-index: 2; /* Ensures text appears above the overlay */
 }
 #try-app-text-one {
     font-size: 20px;
@@ -272,13 +287,28 @@
     font-size: 10px;
     color: white;
 }
+.try-app-button {
+    margin-top: 20px;
+    width: 120px;
+    height: 35px;
+    text-align: center;
+    background: rgb(234, 211, 3);
+}
+.try-app-button p {
+    color: rgb(0, 0, 0);
+    font-size: 12px;
+    padding-top: 5px;
+    font-family: 'Segoe UI', sans-serif;
+    font-weight: 100;
+    font-style: normal;
+}
 .social {
-    height: 150px;
+    height: 250px;
     display: flex;
     flex-direction: column;
     background-color: rgb(30, 38, 52);
     align-items: center;
-    padding-top: 150px;
+    justify-content: center;
 }
 .social p{
     color: white;
@@ -294,6 +324,12 @@
     width: 25px;
     height: 25px;    
 }
+#social-text-1 {
+    font-size: 15px;
+    font-family: sans-serif;
+    font-weight: 1;
+}
 #social-text-2 {
     font-family: sans-serif;
+    color: silver
 }
