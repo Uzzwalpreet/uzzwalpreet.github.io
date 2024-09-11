@@ -1,6 +1,6 @@
 .body {
-    height: 1200px;
     width: 1200px;
+    margin-left: -8px;
 }
 #Top-Bar{
     display: flex;
@@ -10,13 +10,17 @@
 .page2, .Menu {
     display: inline-block;
     background-color: white;
-    height: 40px;
-    margin-left: 80px;
+    height: 55px;
+    margin-left: 200px;
     margin-right: 160px;
+    margin-top: 50px;
+    font-size: 11px;
+    font-family: 'Arial', 'Helvetica', sans-serif;
+
 }
 .page2 a{
     text-decoration: none;
-    color: grey;
+    color: rgb(201, 201, 201);
     padding: 10px;
 }
 .page2 a:hover{
@@ -29,16 +33,28 @@
 }
 .image-container {
     position: relative;
-    background-image: url("./images/lawyer.jpg");
-    height: 45%;
-    background-size: cover;
+    height: 535px;
     border: 2px black solid;
+}
+
+.image-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("./images/lawyer.jpg");
+    background-size: cover;
+    /* background-position: center; */
+    filter: brightness(0.8) contrast(1.2);
+    mix-blend-mode: multiply;
 }
 
 .signup {
     position: absolute;
     top: 110px;
-    left: 225px;
+    left: 200px;
     height: 280px;
     width: 20%;
     background-color: rgb(16,60,92);
@@ -51,22 +67,25 @@
 }
 #first-para {
     font-size: 10px;
-    font-family: "Open Sans", system-ui;
+    font-family: 'Segoe UI', sans-serif;
     font-weight: 30;
 }
 #second-para {
     font-size: 25px;
-    font-family: "Open Sans", system-ui;
+    font-family: 'Segoe UI', sans-serif;
 }
 .signup i {
     color: rgb(226, 204, 1);
     font-size: 10px;
 }
-.form {
+#singnup-inputbox {
     margin-top: 10px;
-    width: 220px;
-    height: 30px;
+    width: 200px;
+    height: 28px;
     background: whitesmoke;
+    border: none; 
+    border-radius: 0px; 
+    padding: 5px; 
 }
 .signup-button {
     margin-top: 20px;;
@@ -76,10 +95,12 @@
     background: rgb(226, 204, 1);
 }
 .signup-button p {
-    color: black;
-    font-size: 8px;
+    color: rgb(0, 0, 0);
+    font-size: 9px;
     padding-top: 10px;
-    font-family: "Open Sans", system-ui;
+    font-family: 'Segoe UI', sans-serif;
+    font-weight: 100;
+    font-style: normal;
 }
 .feature-main {
     padding-top: 140px;
@@ -93,11 +114,15 @@
 
 .feature {
     color: grey;
-    font-size: 12px;
+    font-size: 10px;
+    font-family: "Helvetica", "Arial", sans-serif;
+    line-height: 2;
 }
 .feature p {
     color: black;
-    font-size: 15px;
+    font-size: 13px;
+    font-family: 'Righteous', sans-serif;
+    font-weight: lighter;
 }
 
 .review {
@@ -117,37 +142,52 @@
     font-weight: bold;
     color: black;
 }
-.plan {
-    display: flex;
-    align-items: center;
+.parallex-image-container{
     position: relative;
-}
-.parallex-image-container {
-    background-image: url("./images/glasses.png");
     height: 630px;
+    /* z-index: 2; */
+}
+.parallex-image-container::before {
+    background-image: url("./images/glasses.png");
     opacity: 0.2;
     filter: grayscale(100%);
-    background-size: cover;
-    background-position: 53% 47%;
+    background-size: 1200px 100%;
+    background-position: cover;
     background-attachment: fixed;
-
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    position: absolute;
+    content: "";
 }
 .plans {
-    border: 2px solid black;
     padding-top: 50px;
     justify-content: center;
     display: flex;
     flex-direction: row;
     gap: 40px;
+    position: relative;
+}
+.plan-affordable {
+    text-align: center;
+    padding-top: 30px;
+    line-height: 1.5;
+}
+#PRICES2 {
+    color: gray;
+    font-size: 12px;
 }
 .grid {
-    width: 200px;
-    height: 300px;
+    width: 280px;
+    height: 400px;
     position: relative;
     background-image: 
-        linear-gradient(90deg, rgba(0, 0, 0, 0.1) 0.5px, transparent 0.5px), 
-        linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0.5px, transparent 0.5px); 
+        linear-gradient(90deg, rgba(16, 16, 16, 0.1) 0.5px, transparent 0.5px), 
+        linear-gradient(180deg, rgba(16, 16, 16, 0.1) 0.5px, transparent 0.5px); 
     background-size: 10px 10px; 
+    background-color: white;
 }
 .diamonds {
     position: absolute;
@@ -156,8 +196,8 @@
     width: 100%;
     height: 100%;
     background-image:
-        linear-gradient(45deg, transparent 50%, rgba(0, 0, 0, 0.1) 49%, rgba(0, 0, 0, 0.1) 51%, transparent 50%),
-        linear-gradient(-45deg, transparent 50%, rgba(0, 0, 0, 0.1) 49%, rgba(0, 0, 0, 0.1) 51%, transparent 50%);
+        linear-gradient(45deg, transparent 50%, rgba(16, 16, 16, 0.1) 49%, rgba(16, 16, 16, 0.1) 51%, transparent 50%),
+        linear-gradient(-45deg, transparent 50%, rgba(16, 16, 16, 0.1) 49%, rgba(16, 16, 16, 0.1) 51%, transparent 50%);
     background-size: 20px 20px; 
     pointer-events: none;
 }
@@ -165,24 +205,49 @@
     text-align: center;
 }
 .plans p{
-    line-height: 40px;
+    line-height: 33px;
     padding-top: 20px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 250;
+    font-size: 12px;
+    color: rgb(81, 81, 81);
 }
 #price-type1, #price-type2, #price-type3 {
     line-height: 0.1;
     padding-top: 20px;
     margin: 0;
     text-align: center;
-    font-weight: bold;
+    font-weight: 300;
     font-size: 25px;
+    color: black;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 .term {
     line-height: 0.1;
     padding-top: 20px;
     margin: 0;
     text-align: center;
-    font-weight: bold;
+    font-weight: 300;
     font-size: 25px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+.bold-text2 {
+    color: black;
+    font-weight: 400;
+}
+.buy-now {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+    height: 30px;
+    background-color: rgb(16,60,92);
+    color: white;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    margin-left: 80px;
+    margin-top: -30px;
 }
 .try-app {
     border: 2px solid red;
@@ -190,8 +255,6 @@
     background-image: url("./images/notebook.jpg");
     background-size: cover;
     background-position: 53% 47%;
-    /* background-blend-mode: multiply;
-    background-color: rgb(30, 109, 161); Adding a blue overlay */
 }
 .try-app-text {
     justify-content: center;
