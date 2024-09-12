@@ -1,6 +1,7 @@
 .body {
     width: 1200px;
     margin-left: -8px;
+    margin-bottom: -9px;
 }
 #Top-Bar{
     display: flex;
@@ -15,7 +16,6 @@
     margin-top: 50px;
     font-size: 11px;
     font-family: 'Arial', 'Helvetica', sans-serif;
-
 }
 .page2 a{
     text-decoration: none;
@@ -44,7 +44,6 @@
     bottom: 0;
     background-image: url("./images/lawyer.jpg");
     background-size: cover;
-    /* background-position: center; */
     filter: brightness(0.8) contrast(1.2);
     mix-blend-mode: multiply;
 }
@@ -75,6 +74,7 @@
 .signup i {
     color: rgb(226, 204, 1);
     font-size: 10px;
+    font-family: 'Segoe UI', sans-serif;
 }
 #singnup-inputbox {
     margin-top: 10px;
@@ -86,19 +86,21 @@
     padding: 5px; 
 }
 .signup-button {
-    margin-top: 20px;;
+    margin-top: 20px;
     width: 110px;
     height: 30px;
     text-align: center;
-    background: rgb(226, 204, 1);
+    background: rgb(236, 214, 7);
 }
 .signup-button p {
     color: rgb(0, 0, 0);
     font-size: 9px;
     padding-top: 10px;
-    font-family: 'Segoe UI', sans-serif;
     font-weight: 100;
     font-style: normal;
+}
+#sign-up-buttom-p{
+    font-family: 'Montserrat', sans-serif;
 }
 .feature-main {
     padding-top: 140px;
@@ -106,14 +108,14 @@
     display: flex;
     flex-direction: row;
     justify-content: center;
-    gap: 40px; 
+    gap: 45px; 
 }
 
 .feature {
     color: grey;
-    font-size: 10px;
+    font-size: 11px;
     font-family: "Helvetica", "Arial", sans-serif;
-    line-height: 2;
+    line-height: 1.8;
 }
 .feature p {
     color: black;
@@ -128,11 +130,15 @@
     height: 180px;
     background: rgb(244,244,244);
     font-size: 18px;
+    font-family: 'Roboto', sans-serif;
 }
 
-#owner {
-    font-size: 15px;
-    color: gray;
+#review-2 {
+    font-size: 12px;
+    color: #747474;
+}
+#review-1 {
+    font-weight: 300;
 }
 .bold-text {
     font-weight: bold;
@@ -142,7 +148,6 @@
     position: relative;
     height: 650px;
     height:90%;
-    /* z-index: 2; */
 }
 .parallex-image-container::before {
     background-image: url("./images/glasses.png");
@@ -172,10 +177,16 @@
     text-align: center;
     padding-top: 30px;
     line-height: 1.5;
+    position: relative;
+    font-family: 'Montserrat', sans-serif;
 }
 #PRICES2 {
-    color: gray;
+    color: rgb(170, 170, 170);
     font-size: 12px;
+}
+#PRICES {
+    font-size: 18px;
+    font-weight: 100px;
 }
 .grid {
     width: 280px;
@@ -184,7 +195,7 @@
     background-image: 
         linear-gradient(90deg, rgba(16, 16, 16, 0.1) 0.5px, transparent 0.5px), 
         linear-gradient(180deg, rgba(16, 16, 16, 0.1) 0.5px, transparent 0.5px); 
-    background-size: 10px 10px; 
+    background-size: 14px 14px; 
     background-color: white;
 }
 .diamonds {
@@ -194,9 +205,9 @@
     width: 100%;
     height: 100%;
     background-image:
-        linear-gradient(45deg, transparent 50%, rgba(16, 16, 16, 0.1) 49%, rgba(16, 16, 16, 0.1) 51%, transparent 50%),
-        linear-gradient(-45deg, transparent 50%, rgba(16, 16, 16, 0.1) 49%, rgba(16, 16, 16, 0.1) 51%, transparent 50%);
-    background-size: 20px 20px; 
+    linear-gradient(45deg, transparent 50%, rgba(16, 16, 16, 0.1) 48%, rgba(16, 16, 16, 0.1) 52%, transparent 50%),
+    linear-gradient(-45deg, transparent 50%, rgba(16, 16, 16, 0.1) 48%, rgba(16, 16, 16, 0.1) 52%, transparent 50%);
+    background-size: 28px 28px; 
     pointer-events: none;
 }
 .basic, .standard, .corporate{
@@ -215,7 +226,7 @@
     padding-top: 20px;
     margin: 0;
     text-align: center;
-    font-weight: 300;
+    font-weight: 400;
     font-size: 25px;
     color: black;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
@@ -246,9 +257,9 @@
     padding: 8px;
     margin-left: 80px;
     margin-top: -30px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
 }
-
-
 .try-app {
     height: 400px;
     background-image: url("./images/notebook.jpg");
@@ -264,7 +275,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 51, 102, 0.7); /* Adjust this for the blue color */
+    background-color: rgba(0, 55, 104, 0.7); 
     z-index: 1;
 }
 
@@ -277,11 +288,13 @@
     position: relative;
     text-align: center;
     line-height: 0cm;
-    z-index: 2; /* Ensures text appears above the overlay */
+    z-index: 2; 
+    font-family: 'Montserrat', sans-serif;
 }
 #try-app-text-one {
-    font-size: 20px;
+    font-size: 23px;
     color: white;
+    font-weight: 100;
 }
 #try-app-text-two {
     font-size: 10px;
@@ -298,7 +311,6 @@
     color: rgb(0, 0, 0);
     font-size: 12px;
     padding-top: 5px;
-    font-family: 'Segoe UI', sans-serif;
     font-weight: 100;
     font-style: normal;
 }
@@ -327,9 +339,16 @@
 #social-text-1 {
     font-size: 15px;
     font-family: sans-serif;
-    font-weight: 1;
+    font-weight: 100;
 }
 #social-text-2 {
     font-family: sans-serif;
-    color: silver
+    color: rgb(175, 175, 175);
+    font-size: 10px;
+}
+#about, #projects, #services {
+    margin: 0;
+    font-size: 40px;
+    line-height: 1.5;
+    color: black;
 }
