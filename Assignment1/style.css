@@ -66,18 +66,19 @@
     font-size: 10px;
     font-family: 'Segoe UI', sans-serif;
     font-weight: 30;
+    padding-bottom: 6px;
 }
 #second-para {
     font-size: 25px;
     font-family: 'Segoe UI', sans-serif;
 }
 .signup i {
-    color: rgb(226, 204, 1);
+    color: rgb(227, 205, 10);
     font-size: 10px;
     font-family: 'Segoe UI', sans-serif;
 }
 #singnup-inputbox {
-    margin-top: 10px;
+    margin-top: 13px;
     width: 200px;
     height: 28px;
     background: whitesmoke;
@@ -90,7 +91,7 @@
     width: 110px;
     height: 30px;
     text-align: center;
-    background: rgb(236, 214, 7);
+    background: rgb(233, 211, 12);
 }
 .signup-button p {
     color: rgb(0, 0, 0);
@@ -129,7 +130,6 @@
     text-align: center;
     height: 180px;
     background: rgb(244,244,244);
-    font-size: 18px;
     font-family: 'Roboto', sans-serif;
 }
 
@@ -139,6 +139,7 @@
 }
 #review-1 {
     font-weight: 300;
+    font-size: 18px;
 }
 .bold-text {
     font-weight: bold;
@@ -193,8 +194,8 @@
     height: 400px;
     position: relative;
     background-image: 
-        linear-gradient(90deg, rgba(16, 16, 16, 0.1) 0.5px, transparent 0.5px), 
-        linear-gradient(180deg, rgba(16, 16, 16, 0.1) 0.5px, transparent 0.5px); 
+        linear-gradient(90deg, rgba(93, 91, 91, 0.067) 0.5px, transparent 0.5px), 
+        linear-gradient(180deg, rgba(93, 91, 91, 0.067) 0.5px, transparent 0.5px); 
     background-size: 14px 14px; 
     background-color: white;
 }
@@ -205,8 +206,8 @@
     width: 100%;
     height: 100%;
     background-image:
-    linear-gradient(45deg, transparent 50%, rgba(16, 16, 16, 0.1) 48%, rgba(16, 16, 16, 0.1) 52%, transparent 50%),
-    linear-gradient(-45deg, transparent 50%, rgba(16, 16, 16, 0.1) 48%, rgba(16, 16, 16, 0.1) 52%, transparent 50%);
+    linear-gradient(45deg, transparent 50%, rgba(93, 91, 91, 0.067) 48%, rgba(93, 91, 91, 0.067) 52%, transparent 50%),
+    linear-gradient(-45deg, transparent 50%, rgba(93, 91, 91, 0.067) 48%, rgba(93, 91, 91, 0.067) 52%, transparent 50%);
     background-size: 28px 28px; 
     pointer-events: none;
 }
