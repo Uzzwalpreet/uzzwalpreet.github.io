@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="body">
+        <div class="search-body">
+                <div class="main-info-div">
+                    <p id="text-1">Weather Search</p>
+                    <p id="text-2">Fill out the form to get weather info !</p>
+                </div>
+                <div class="form-div">
+                    <form onsubmit="formSubmitted(event)">
+                        <div class="street-div">
+                            <label for="street">Street<span id="required">*</span></label>
+                            <input type="text" id="street" name="street" title="Please fill in this field">
+                        </div>
+                        <div class="city-state-div">
+                            <div class="city-div">
+                                <label for="city">City<span id="required">*</span></label>
+                                <input type="text" id="city" name="city" title="Please fill in this field">
+                            </div>
+                            <div class="state-div">
+                                <label for="state">State<span id="required">*</span></label>
+                                <select id="state" id="state" name="state" title="Please fill in this field">
+                                    <option value="">Select your state</option>
+                                </select>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="checkbox">
+                            <label for="autodetect-location">Want us to auto-detect your location? Check here</label>
+                            <input type="checkbox" id="autodetect-location" name="autodetect-location">
+                        </div>
+                        <div class="button">
+                            <button type="submit" id="submit-btn" name="submit-btn">SUBMIT</button>
+                            <button type="reset"  id="clear-btn" name="clear-btn">CLEAR</button>
+                        </div>
+                    </form>
+                </div>
+        </div>
+    </div>
+</body>
+<script src="app.js"></script>
+</html>
