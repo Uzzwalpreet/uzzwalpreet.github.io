@@ -5,6 +5,7 @@
     border: 1px red solid;
     display: flex;
    justify-content: center;
+   background-color: rgb(226, 226, 226);
 }
 
 .search-body {
@@ -34,6 +35,7 @@
     border: 2px solid black;
     padding-left: 30px;
     padding-top: 25px;
+    background-color: white;
 }
 #required {
     color: red;
