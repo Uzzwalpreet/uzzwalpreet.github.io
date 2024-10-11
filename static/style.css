@@ -1,0 +1,182 @@
+body {
+    border: 2px green solid;
+    background-color: rgb(226, 226, 226);
+    height: 1200px;
+    width: 1200px;
+}
+.main {
+    margin-left: 300px;
+    width: 510px;
+    border: 1px red solid;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.search-body {
+    border: 2px yellow solid;
+    height: 390px;
+    padding-top: 40px;
+}
+.main-info-div {
+    border: 2px solid blue;
+    height: 110px;
+    background: url(img/banner.jpg) no-repeat 0px -45px;
+    background-size: 1100px;
+    padding-left: 30px;
+    line-height: 15px;
+}
+#text-1 {
+    font-size: 22px;
+    font-weight: 600;
+    padding-top: 12px;
+}
+#text-2 {
+    font-size: 17px;
+}
+.form-div {
+    height: 250px;
+    border: 2px solid black;
+    padding-left: 30px;
+    padding-top: 25px;
+    background-color: white;
+}
+#required {
+    color: red;
+    font-size: 12px;
+    padding-left: 2px;
+    vertical-align: 2px;
+}
+label {
+    display: block;
+    margin-bottom: 1px;
+    color: rgb(34, 109, 179);
+}
+#street {
+    width: 428px;
+    height: 20px;
+}
+.city-state-div {
+    display: flex;
+    gap: 30px;
+    padding-top: 20px;
+}
+#state {
+    width: 215px
+}
+#city {
+    height: 20px;
+}
+.checkbox{
+    padding-top: 8px;
+    display: flex;
+}
+hr {
+    margin-top: 20px;
+    width: calc(100% - 40px);
+    margin-left: 0;
+    background-color: #000;
+}
+.button {
+    padding-top: 20px;
+}
+#submit-btn {
+    border-radius: 0px;
+    height: 40px;
+    width: 90px;
+    background-color: #4c6caa;
+    color: white;
+    border: none;
+}
+#clear-btn {
+    border-radius: 0px;
+    height: 40px;
+    width: 90px;
+    background-color: rgb(252,180,4);
+    color: white;
+    border: none;
+}
+
+/************ CARD1 *******************/
+.card {
+    border: 2px blue solid;
+    height: 380px;
+    width: 690px;
+    margin-top: 40px;
+    padding-left: 20px;
+    background-color: white;
+    margin-left: 200px;
+    /* display: none; */
+}
+
+.card-section-1 {
+    height: 30px;
+    border: 2px solid black;
+    padding-top: 10px;
+}
+#weather-now {
+    width: 100px;  
+    height: auto;  
+}
+.card-section-2 {
+    border: 2px solid black;
+    height: 90px;
+    display: flex;
+    flex-direction: row;
+    gap: 400px;
+}
+.card-section-22 {
+    padding-left: 20px;
+}
+.section2-part1 {
+    display: flex;
+    flex-direction: row;
+}
+.section2-part2{
+    font-size: 100px;
+}
+.weather-report {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-direction: column;
+}
+.card-section-3 {
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+    border: 2px red solid;
+    margin-top: 20px;
+    padding-right: 20px;
+}
+.weather-icons {
+    width: 50px;  
+    height: auto;
+}
+.weather-types, .weather-values, .card-section-22, #card-address, .section2-part2 {
+    color: rgb(150, 150, 150);
+}
+
+/****************** CARD 2 ******************/
+.card2 {
+    border: 2px solid black;
+    width: 950px;
+    height: 420px;
+    display: flex;
+    flex-direction: column;
+    margin-left: 100px;
+}
+.card2Day1, .card2Day2, .card2Day3, .card2Day4, .card2Day5, .card2Day6 {
+    border: 2px solid yellowgreen;
+    display: flex;
+    flex-direction: row;
+    gap: 120px;
+    background-color: white;
+    align-items: center;
+    margin-top: 5px;
+}
+
+.card2Image img {
+    width: 50px;  
+    height: auto; 
+}
