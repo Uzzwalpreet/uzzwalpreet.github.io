@@ -40,10 +40,10 @@ const autodetectLocation = document.getElementById('autodetect-location');
 autodetectLocation.addEventListener('change', disableFilds);
 
 function disableFilds(e) {
-    const checked = e.target.checked;
-    const streetId = document.getElementById('street');
-    const cityId = document.getElementById('city');
-    const stateId = document.getElementById('state');
+    var checked = e.target.checked;
+    var streetId = document.getElementById('street');
+    var cityId = document.getElementById('city');
+    var stateId = document.getElementById('state');
     
     streetId.value = "";
     cityId.value = "";
@@ -66,6 +66,7 @@ document.getElementById('clear-btn').addEventListener('click', function(e) {
     document.getElementById('city').disabled = false;
     document.getElementById('state').disabled = false;
     document.querySelector('.card').style.display = 'none';
+    document.querySelector('.card2').style.display = 'none';
 });
 function autoDetectIp() {
     const token = "3ce693acafe8d1";
@@ -100,7 +101,7 @@ function geocodingApi(street, city, state) {
 async function webServerCall(lat, log) {
     let response;
     let data;
-    let url = `/get-weather?lat=${lat}&lng=${log}`;
+    let url = `/get-weather-test?lat=${lat}&lng=${log}`;
     try {
         response = await fetch(url)
         data = await response.json();
@@ -109,20 +110,24 @@ async function webServerCall(lat, log) {
         console.error('Error:', error);
     }
 }
+let cloudCoverArr = []
+let humidityArr = []
+let pressureArr = []
+let windSpeedArr = []
+let visibilityArr = []
+let uvIndexArr = [] 
+let weatherCodeArr = []
+let temepratureArr = []
+let startTimeArr = []
+let temperatureMin = []
+let temperatureMax = []
 // TODO: ADD TRY CATCH for any failuer say api call exhausted
 function extractValues(data, newAddress) {
-    let cloudCoverArr = []
-    let humidityArr = []
-    let pressureArr = []
-    let windSpeedArr = []
-    let visibilityArr = []
-    let uvIndexArr = [] 
-    let weatherCodeArr = []
-    let temepratureArr = []
-    let startTimeArr = []
     let intervals = data.data.timelines[0].intervals
     for (i = 0; i < intervals.length; i++) {
         let values = intervals[i].values
+        console.log(values);
+        let startTimeFetch = intervals[i].startTime
         cloudCoverArr.push(values.cloudCover)
         humidityArr.push(values.humidity)
         pressureArr.push(values.pressureSeaLevel)
@@ -131,12 +136,24 @@ function extractValues(data, newAddress) {
         uvIndexArr.push(values.uvIndex)
         weatherCodeArr.push(values.weatherCode)
         temepratureArr.push(values.temperature)
-        startTimeArr.push(values.startTime)
+        temperatureMax.push(values.temperatureMax)
+        temperatureMin.push(values.temperatureMin)
+        startTimeArr.push(startTimeFetch)
     }
     // call to put values in DOM
-    searchResultsDOM(humidityArr, pressureArr, windSpeedArr, visibilityArr, cloudCoverArr, uvIndexArr, temepratureArr, weatherCodeArr, newAddress);
+    searchResultsDOM(newAddress);
 }
-function searchResultsDOM(humidityArr, pressureArr, windSpeedArr, visibilityArr, cloudCoverArr, uvIndexArr, temepratureArr, weatherCodeArr, newAddress) {
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const dayOfWeek = daysOfWeek[date.getUTCDay()]; 
+    const day = String(date.getUTCDate()).padStart(2, '0'); 
+    const month = months[date.getUTCMonth()]; 
+    const year = date.getUTCFullYear(); 
+    return `${dayOfWeek}, ${day} ${month} ${year}`;
+}
+function searchResultsDOM(newAddress) {
     // card 1 updates
     document.getElementById('card-address').textContent = newAddress;
     document.querySelector('#temperature-now').textContent = temepratureArr[0];
@@ -144,14 +161,64 @@ function searchResultsDOM(humidityArr, pressureArr, windSpeedArr, visibilityArr,
     document.getElementById('weather-now').src = weatherCodeText.get(weatherCodeArr[0])[1];
     let weatherValuesToBeUpdated = document.querySelectorAll('.weather-values');
     console.log(weatherValuesToBeUpdated)
-    weatherValuesToBeUpdated[0].textContent = humidityArr[0];
-    weatherValuesToBeUpdated[1].textContent = pressureArr[0];
-    weatherValuesToBeUpdated[2].textContent = windSpeedArr[0];
-    weatherValuesToBeUpdated[3].textContent = visibilityArr[0];
-    weatherValuesToBeUpdated[4].textContent = cloudCoverArr[0];
+    weatherValuesToBeUpdated[0].textContent = humidityArr[0] + '%';
+    weatherValuesToBeUpdated[1].textContent = pressureArr[0] + 'inHg';
+    weatherValuesToBeUpdated[2].textContent = windSpeedArr[0] + 'mph';
+    weatherValuesToBeUpdated[3].textContent = visibilityArr[0] + 'mi';
+    weatherValuesToBeUpdated[4].textContent = cloudCoverArr[0] + '%';
     weatherValuesToBeUpdated[5].textContent = uvIndexArr[0];
     document.querySelector('.card').style.display = 'block';
     // card 2 updates
+    let card2 = document.querySelector('.card2');
+    while(card2.children.length>1)
+    {
+        card2.removeChild(card2.children[1]);
+    }
+    for (let i = 0; i < startTimeArr.length; i++) {
+
+        const weatherCard2 = document.createElement('div');
+        weatherCard2.classList.add('weather-card');
+    
+        //DATE
+        const dateElement = document.createElement('div');
+        dateElement.classList.add('date');
+        dateElement.textContent = formatDate(startTimeArr[i]);
+        weatherCard2.appendChild(dateElement);
+
+        //IMAGE
+        const imageContainer = document.createElement('div');
+        imageContainer.classList.add('card2Image');
+        const imageElement = document.createElement('img');
+        imageElement.src = weatherCodeText.get(weatherCodeArr[i])[1];  
+        imageContainer.appendChild(imageElement); 
+
+        //IMAGE TEXT
+        const statusElement = document.createElement('span');
+        statusElement.textContent = weatherCodeText.get(weatherCodeArr[i])[0];
+        imageContainer.appendChild(statusElement); 
+        weatherCard2.appendChild(imageContainer); 
+
+        //TEMPHIGH
+        const tempHighElement = document.createElement('div');
+        tempHighElement.classList.add('tempHigh');
+        tempHighElement.textContent = temperatureMax[i];
+        weatherCard2.appendChild(tempHighElement);
+
+        //TEMPLOW
+        const tempLowElement = document.createElement('div');
+        tempLowElement.classList.add('tempLow');
+        tempLowElement.textContent = temperatureMin[i];
+        weatherCard2.appendChild(tempLowElement);
+
+        //WINDSPEED
+        const windSpeedElement = document.createElement('div');
+        windSpeedElement.classList.add('windSpeed');
+        windSpeedElement.textContent = windSpeedArr[i];
+        weatherCard2.appendChild(windSpeedElement);
+
+        card2.appendChild(weatherCard2);
+    }
+
     document.querySelector('.card2').style.display = 'block';
 }
 // Form Submission, extracting data
@@ -190,3 +257,16 @@ async function formSubmitted(e) {
     let data = await webServerCall(lat, log)
     extractValues(data, newAddress);
 }
+
+// PART 2
+let table = document.querySelector('.card2');
+table.addEventListener('click', function(event) {
+    let clickedTableRow = event.target;
+    let row = clickedTableRow.closest('.weather-card');
+    if (row) {
+        let allRows = Array.from(document.querySelectorAll('.weather-card'));
+        let rowIndex = allRows.indexOf(row);
+        console.log('Date:', row.querySelector('.date').textContent);
+        console.log('Card Index:', rowIndex);
+    }
+});
