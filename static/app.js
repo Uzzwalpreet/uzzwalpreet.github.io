@@ -137,12 +137,22 @@ function extractValues(data, newAddress) {
     searchResultsDOM(humidityArr, pressureArr, windSpeedArr, visibilityArr, cloudCoverArr, uvIndexArr, temepratureArr, weatherCodeArr, newAddress);
 }
 function searchResultsDOM(humidityArr, pressureArr, windSpeedArr, visibilityArr, cloudCoverArr, uvIndexArr, temepratureArr, weatherCodeArr, newAddress) {
+    // card 1 updates
     document.getElementById('card-address').textContent = newAddress;
     document.querySelector('#temperature-now').textContent = temepratureArr[0];
     document.getElementById('weather-now-text').textContent = weatherCodeText.get(weatherCodeArr[0])[0];
     document.getElementById('weather-now').src = weatherCodeText.get(weatherCodeArr[0])[1];
+    let weatherValuesToBeUpdated = document.querySelectorAll('.weather-values');
+    console.log(weatherValuesToBeUpdated)
+    weatherValuesToBeUpdated[0].textContent = humidityArr[0];
+    weatherValuesToBeUpdated[1].textContent = pressureArr[0];
+    weatherValuesToBeUpdated[2].textContent = windSpeedArr[0];
+    weatherValuesToBeUpdated[3].textContent = visibilityArr[0];
+    weatherValuesToBeUpdated[4].textContent = cloudCoverArr[0];
+    weatherValuesToBeUpdated[5].textContent = uvIndexArr[0];
     document.querySelector('.card').style.display = 'block';
-    console.log(weatherCodeText.get(weatherCodeArr[0]))
+    // card 2 updates
+    document.querySelector('.card2').style.display = 'block';
 }
 // Form Submission, extracting data
 async function formSubmitted(e) {
@@ -159,7 +169,6 @@ async function formSubmitted(e) {
         console.log("Call to Ipinfo")
         json = autoDetectIp()
         json = JSON.parse(json);
-        console.log("Ipinfo data", json)
         let city = json.city
         let region = json.region
         let country = json.country
@@ -172,9 +181,9 @@ async function formSubmitted(e) {
         let streetId = formData.get('street');
         let city = formData.get('city');
         let state = formData.get('state');
-        newAddress = street + ', ' + city + ', ' + state
         json = geocodingApi(streetId, city, state);
         json = JSON.parse(json);
+        newAddress = json.results[0].formatted_address;
         lat = json.results[0].geometry.location.lat;
         log = json.results[0].geometry.location.lng;
     }
