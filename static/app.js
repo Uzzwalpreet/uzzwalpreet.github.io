@@ -8,7 +8,7 @@ const precipitationType = new Map();
 
 precipitationType.set(0, 'N/A');
 precipitationType.set(1, "Rain");
-precipitationType.set(2, "Snow");
+precipitationType.set(2, "Snow"); 
 precipitationType.set(3, "Freezing Rain");
 precipitationType.set(4, "Ice Pellets");
 
@@ -98,10 +98,10 @@ function autoDetectIp() {
 
 function geocodingApi(street, city, state) {
     const apiKey = "AIzaSyC3CkllDKmcg7dPSQR1kYBd-b85SBMLVbo";
-    street = street.replace(/ /g, "+");
-    city = city.replace(/ /g, "+");
     state = statesID[states.indexOf(state)];
-    const url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + street + city + state + "&key=" + apiKey;
+    // const url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + street + city + state + "&key=" + apiKey;
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(street)},${encodeURIComponent(city)},${encodeURIComponent(state)}&key=${apiKey}`;
+    console.log(url)
     const xhr = new XMLHttpRequest();
     xhr.open("GET", url, false);
     xhr.send();
@@ -140,6 +140,8 @@ let temperatureMin = []
 let temperatureMax = []
 let precipitationTypeArr = []
 let chanceOfRainArr = []
+let sunriseTimeArr = []
+let sunsetTimeArr = []
 // TODO: ADD TRY CATCH for any failuer say api call exhausted
 function extractValues(data, newAddress) {
     let intervals = data.data.timelines[0].intervals
@@ -159,6 +161,8 @@ function extractValues(data, newAddress) {
         startTimeArr[i] = startTimeFetch
         precipitationTypeArr[i] = values.precipitationType
         chanceOfRainArr[i] = values.precipitationProbability
+        sunriseTimeArr[i] = values.sunriseTime
+        sunsetTimeArr[i] = values.sunsetTime
     }
     // call to put values in DOM
     searchResultsDOM(newAddress);
@@ -269,6 +273,7 @@ async function formSubmitted(e) {
         let state = formData.get('state');
         json = geocodingApi(streetId, city, state);
         json = JSON.parse(json);
+        console.log(json)
         newAddress = json.results[0].formatted_address;
         lat = json.results[0].geometry.location.lat;
         log = json.results[0].geometry.location.lng;
@@ -304,6 +309,19 @@ function cardExpand(index, date, status) {
     card3Types[0].querySelector('.C3TypesValue').innerHTML = precipitationType.get(precipitationTypeArr[index]);
     card3Types[1].querySelector('.C3TypesValue').innerHTML = chanceOfRainArr[index] + '%';
     card3Types[2].querySelector('.C3TypesValue').innerHTML = windSpeedArr[index] + ' mph';
-    card3Types[3].querySelector('.C3TypesValue').innerHTML = humidityArr[index]; + '%'
-    card3Types[4].querySelector('.C3TypesValue').innerHTML = visibilityArr[index];
+    card3Types[3].querySelector('.C3TypesValue').innerHTML = humidityArr[index] + '%';
+    card3Types[4].querySelector('.C3TypesValue').innerHTML = visibilityArr[index] + ' mi';
+    card3Types[5].querySelector('.C3TypesValue').innerHTML = converTime12Hr(sunriseTimeArr[index]) + '/' + converTime12Hr(sunsetTimeArr[index]);
+}
+
+function converTime12Hr(time) {
+    const utcDate = new Date(time); 
+    const options = { 
+        timeZone: "America/Los_Angeles", 
+        hour12: true, 
+        hour: 'numeric', 
+        minute: '2-digit'  // Ensures minutes are always two digits
+    };    
+    const laTime = utcDate.toLocaleString("en-US", options);
+    return laTime;
 }

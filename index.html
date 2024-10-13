@@ -17,18 +17,21 @@
                     <form onsubmit="formSubmitted(event)">
                         <div class="street-div">
                             <label for="street">Street<span id="required">*</span></label>
-                            <input type="text" id="street" name="street" title="Please fill in this field">
+                            <input type="text" id="street" name="street">
+                            <!-- <span class="tooltip" id="street-tooltip">Please fill out this field</span> -->
                         </div>
                         <div class="city-state-div">
                             <div class="city-div">
                                 <label for="city">City<span id="required">*</span></label>
-                                <input type="text" id="city" name="city" title="Please fill in this field">
+                                <input type="text" id="city" name="city">
+                                <!-- <span class="tooltip" id="city-tooltip">Please fill out this field</span> -->
                             </div>
                             <div class="state-div">
                                 <label for="state">State<span id="required">*</span></label>
-                                <select id="state" name="state" title="Please fill in this field">
+                                <select id="state" name="state">
                                     <option value="">Select your state</option>
                                 </select>
+                                <!-- <span class="tooltip" id="state-tooltip">Please select your state</span> -->
                             </div>
                         </div>
                         <hr>
