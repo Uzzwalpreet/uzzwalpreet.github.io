@@ -2,9 +2,12 @@ body {
     background-color: rgb(226, 226, 226);
     height: 1200px;
     width: 1200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 .main {
-    margin-left: 300px;
+    /* margin-left: 300px; */
     width: 510px;
     display: flex;
     flex-direction: column;
@@ -100,7 +103,7 @@ hr {
     padding-left: 20px;
     padding-right: 20px;
     background-color: white;
-    margin-left: 200px;
+    /* margin-left: 200px; */
     display: none;
 }
 
@@ -173,7 +176,7 @@ hr {
     height: 420px;
     display: flex;
     flex-direction: column;
-    margin-left: 100px;
+    /* margin-left: 100px; */
     margin-top: 50px;
     display: none;
 }
@@ -222,4 +225,79 @@ hr {
 }
 .card2Heading span:last-child {
     margin-right: 0;
+}
+/**************** WHITELINE ****************/
+#whiteline {
+    border: none;
+    background-color: white;
+    height: 0.8px;
+    width: 33%;
+    margin: 20px auto;
+}
+/**************** CARD3 ********************/
+.card3Heading {
+    margin-top: 80px;
+    text-align: center;
+    font-size: 45px;
+    display: none;
+}
+.cardBox3 {
+    margin-top: 20px;
+    height: 390px;
+    width: 510px;
+    border: 3px solid rgb(171, 171, 171);
+    background-image: linear-gradient(white, #3d578c);
+    display: none;
+}
+.card3Box1 {
+    margin-top: 15px;
+    justify-content: space-between;
+}
+.card3Box1 {
+    display: flex;
+    flex-direction: row;
+}
+.card3UpperText {
+    padding-left: 15px;
+    padding-top: 15px;
+    display: flex;
+    gap: 20px;
+    flex-direction: column;
+    color: rgb(22, 83, 141);
+}
+
+#card3Date, #card3Status {
+    font-size: 25px;
+}
+
+#card3Temp {
+    font-size: 32px;
+}
+
+#card3UpperImg {
+    height: 160px;
+    width: 160px;
+    padding-right: 20px;
+    padding-top: 5px;
+}
+
+.C3Types {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    color: white;
+    gap: 2px;
+    margin-bottom: 4px;
+    /* padding-top: 5px; */
+}
+
+.C3TypesText {
+    width: 255px;
+    text-align: right;
+    font-size: 18px;
+}
+
+.C3TypesValue {
+    text-align: left;
+    font-size: 22px;
 }

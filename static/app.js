@@ -1,7 +1,20 @@
 //Const Values
 const states = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'District Of Columbia', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming']
+
 const statesID = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'DC', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY']
+
+//Precipitation Type
+const precipitationType = new Map();
+
+precipitationType.set(0, 'N/A');
+precipitationType.set(1, "Rain");
+precipitationType.set(2, "Snow");
+precipitationType.set(3, "Freezing Rain");
+precipitationType.set(4, "Ice Pellets");
+
+// Weather Codes - Status and SVG File
 const weatherCodeText = new Map();
+
 weatherCodeText.set(4201, ['Heavy Rain', '/static/weathercodes/rain_heavy.svg']); 
 weatherCodeText.set(4001, ['Rain', '/static/weathercodes/rain.svg']);
 weatherCodeText.set(4200, ['Light Rain', '/static/weathercodes/rain_light.svg']);
@@ -67,6 +80,8 @@ document.getElementById('clear-btn').addEventListener('click', function(e) {
     document.getElementById('state').disabled = false;
     document.querySelector('.card').style.display = 'none';
     document.querySelector('.card2').style.display = 'none';
+    document.querySelector('.card3Heading').style.display = 'none';
+    document.querySelector('.cardBox3').style.display = 'none'
 });
 function autoDetectIp() {
     const token = "3ce693acafe8d1";
@@ -101,15 +116,17 @@ function geocodingApi(street, city, state) {
 async function webServerCall(lat, log) {
     let response;
     let data;
-    let url = `/get-weather-test?lat=${lat}&lng=${log}`;
+    let url = `/get-weather?lat=${lat}&lng=${log}`;
     try {
         response = await fetch(url)
         data = await response.json();
+        console.log("Data", data)
         return data;
     } catch(error) {
         console.error('Error:', error);
     }
 }
+// Array to populate the data
 let cloudCoverArr = []
 let humidityArr = []
 let pressureArr = []
@@ -121,24 +138,27 @@ let temepratureArr = []
 let startTimeArr = []
 let temperatureMin = []
 let temperatureMax = []
+let precipitationTypeArr = []
+let chanceOfRainArr = []
 // TODO: ADD TRY CATCH for any failuer say api call exhausted
 function extractValues(data, newAddress) {
     let intervals = data.data.timelines[0].intervals
     for (i = 0; i < intervals.length; i++) {
         let values = intervals[i].values
-        console.log(values);
         let startTimeFetch = intervals[i].startTime
-        cloudCoverArr.push(values.cloudCover)
-        humidityArr.push(values.humidity)
-        pressureArr.push(values.pressureSeaLevel)
-        windSpeedArr.push(values.windSpeed)
-        visibilityArr.push(values.visibility)
-        uvIndexArr.push(values.uvIndex)
-        weatherCodeArr.push(values.weatherCode)
-        temepratureArr.push(values.temperature)
-        temperatureMax.push(values.temperatureMax)
-        temperatureMin.push(values.temperatureMin)
-        startTimeArr.push(startTimeFetch)
+        cloudCoverArr[i] = values.cloudCover
+        humidityArr[i] = values.humidity
+        pressureArr[i] = values.pressureSeaLevel
+        windSpeedArr[i] = values.windSpeed
+        visibilityArr[i] = values.visibility
+        uvIndexArr[i] = values.uvIndex
+        weatherCodeArr[i] = values.weatherCode
+        temepratureArr[i] = values.temperature
+        temperatureMax[i] = values.temperatureMax
+        temperatureMin[i] = values.temperatureMin
+        startTimeArr[i] = startTimeFetch
+        precipitationTypeArr[i] = values.precipitationType
+        chanceOfRainArr[i] = values.precipitationProbability
     }
     // call to put values in DOM
     searchResultsDOM(newAddress);
@@ -153,7 +173,7 @@ function formatDate(dateString) {
     const year = date.getUTCFullYear(); 
     return `${dayOfWeek}, ${day} ${month} ${year}`;
 }
-function searchResultsDOM(newAddress) {
+function searchResultsDOM(newAddress) {  
     // card 1 updates
     document.getElementById('card-address').textContent = newAddress;
     document.querySelector('#temperature-now').textContent = temepratureArr[0];
@@ -168,14 +188,14 @@ function searchResultsDOM(newAddress) {
     weatherValuesToBeUpdated[4].textContent = cloudCoverArr[0] + '%';
     weatherValuesToBeUpdated[5].textContent = uvIndexArr[0];
     document.querySelector('.card').style.display = 'block';
+    
     // card 2 updates
-    let card2 = document.querySelector('.card2');
-    while(card2.children.length>1)
-    {
+    let card2 = document.querySelector('.card2');  
+    while (card2.children.length > 1) {
         card2.removeChild(card2.children[1]);
     }
-    for (let i = 0; i < startTimeArr.length; i++) {
 
+    for (let i = 0; i < startTimeArr.length; i++) {
         const weatherCard2 = document.createElement('div');
         weatherCard2.classList.add('weather-card');
     
@@ -218,7 +238,6 @@ function searchResultsDOM(newAddress) {
 
         card2.appendChild(weatherCard2);
     }
-
     document.querySelector('.card2').style.display = 'block';
 }
 // Form Submission, extracting data
@@ -266,7 +285,25 @@ table.addEventListener('click', function(event) {
     if (row) {
         let allRows = Array.from(document.querySelectorAll('.weather-card'));
         let rowIndex = allRows.indexOf(row);
-        console.log('Date:', row.querySelector('.date').textContent);
-        console.log('Card Index:', rowIndex);
+        let date = row.querySelector('.date').textContent;
+        let status = row.querySelector('.card2Image span').textContent;
+        cardExpand(rowIndex, date, status)
     }
 });
+
+function cardExpand(index, date, status) {
+    document.getElementById('card3Date').innerHTML = date;
+    document.getElementById('card3Status').innerHTML = status;
+    document.getElementById('card3Temp').innerHTML = temperatureMax[index] + '°F/' + temperatureMin[index] + '°F';
+    document.querySelector('#card3UpperImg').src = weatherCodeText.get(weatherCodeArr[index])[1];
+    document.querySelector('.card').style.display = 'none';
+    document.querySelector('.card2').style.display = 'none';
+    document.querySelector('.card3Heading').style.display = 'block';
+    document.querySelector('.cardBox3').style.display = 'block';
+    let card3Types = document.querySelectorAll('.C3Types');
+    card3Types[0].querySelector('.C3TypesValue').innerHTML = precipitationType.get(precipitationTypeArr[index]);
+    card3Types[1].querySelector('.C3TypesValue').innerHTML = chanceOfRainArr[index] + '%';
+    card3Types[2].querySelector('.C3TypesValue').innerHTML = windSpeedArr[index] + ' mph';
+    card3Types[3].querySelector('.C3TypesValue').innerHTML = humidityArr[index]; + '%'
+    card3Types[4].querySelector('.C3TypesValue').innerHTML = visibilityArr[index];
+}
