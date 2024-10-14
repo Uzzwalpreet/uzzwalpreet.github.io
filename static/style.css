@@ -1,6 +1,6 @@
 body {
     background-color: rgb(226, 226, 226);
-    height: 1200px;
+    height: 100%;
     width: 1200px;
     display: flex;
     flex-direction: column;
@@ -228,15 +228,16 @@ hr {
     margin-right: 0;
 }
 /**************** WHITELINE ****************/
-#whiteline {
+#whiteline1, #whiteline2 {
     border: none;
     background-color: white;
     height: 0.8px;
     width: 33%;
     margin: 20px auto;
+    display: none;
 }
 /**************** CARD3 ********************/
-.card3Heading {
+.card3Heading, .chartHeading {
     margin-top: 80px;
     text-align: center;
     font-size: 45px;
@@ -301,4 +302,19 @@ hr {
 .C3TypesValue {
     text-align: left;
     font-size: 22px;
+}
+
+/************* DOWNARROW **************/
+.downarrow {
+    height: 40px;
+    width: 40px;
+    display: none;
+}
+
+/************* CHART1 *****************/
+#chart1 {
+    margin-top: 2px;
+    height: 380px;
+    width: 820px;
+    display: none;
 }

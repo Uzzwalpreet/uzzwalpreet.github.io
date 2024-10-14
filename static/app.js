@@ -82,6 +82,11 @@ document.getElementById('clear-btn').addEventListener('click', function(e) {
     document.querySelector('.card2').style.display = 'none';
     document.querySelector('.card3Heading').style.display = 'none';
     document.querySelector('.cardBox3').style.display = 'none'
+    document.querySelector('#whiteline1').style.display = 'none';
+    document.querySelector('#whiteline2').style.display = 'none';
+    document.querySelector('.chartHeading').style.display = 'none';
+    document.querySelector('.downarrow').style.display = 'none';
+    document.querySelector('#chart1').style.display = 'none';
 });
 function autoDetectIp() {
     const token = "3ce693acafe8d1";
@@ -176,6 +181,22 @@ function formatDate(dateString) {
     const month = months[date.getUTCMonth()]; 
     const year = date.getUTCFullYear(); 
     return `${dayOfWeek}, ${day} ${month} ${year}`;
+}
+// Return Day Mon
+function formatDateChart(dateString) {
+    const date = new Date(dateString);
+    const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const day = String(date.getUTCDate()).padStart(2, '0'); 
+    const month = months[date.getUTCMonth()]; 
+    return `${day} ${month}`;
+}
+// Return Day
+function getDay(dateString) {
+    const date = new Date(dateString);
+    const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    const dayOfWeek = daysOfWeek[date.getUTCDay()]; 
+    return dayOfWeek;
 }
 function searchResultsDOM(newAddress) {  
     // card 1 updates
@@ -304,7 +325,9 @@ function cardExpand(index, date, status) {
     document.querySelector('.card').style.display = 'none';
     document.querySelector('.card2').style.display = 'none';
     document.querySelector('.card3Heading').style.display = 'block';
+    document.querySelector('.chartHeading').style.display = 'block';
     document.querySelector('.cardBox3').style.display = 'block';
+    document.querySelector('#whiteline1').style.display = 'block';
     let card3Types = document.querySelectorAll('.C3Types');
     card3Types[0].querySelector('.C3TypesValue').innerHTML = precipitationType.get(precipitationTypeArr[index]);
     card3Types[1].querySelector('.C3TypesValue').innerHTML = chanceOfRainArr[index] + '%';
@@ -312,16 +335,68 @@ function cardExpand(index, date, status) {
     card3Types[3].querySelector('.C3TypesValue').innerHTML = humidityArr[index] + '%';
     card3Types[4].querySelector('.C3TypesValue').innerHTML = visibilityArr[index] + ' mi';
     card3Types[5].querySelector('.C3TypesValue').innerHTML = converTime12Hr(sunriseTimeArr[index]) + '/' + converTime12Hr(sunsetTimeArr[index]);
+    document.querySelector('#whiteline2').style.display = 'block';
+    document.querySelector('.downarrow').style.display = 'block';
 }
 
 function converTime12Hr(time) {
     const utcDate = new Date(time); 
-    const options = { 
-        timeZone: "America/Los_Angeles", 
-        hour12: true, 
-        hour: 'numeric', 
-        minute: '2-digit'  // Ensures minutes are always two digits
-    };    
+    const options = {timeZone: "America/Los_Angeles", hour12: true, hour: 'numeric', minute: '2-digit'};    
     const laTime = utcDate.toLocaleString("en-US", options);
     return laTime;
+}
+/* High Chart Functionality */
+document.querySelector('.downarrow').addEventListener('click', function() {
+    displayTempChart()});
+/* Code for displaying chart 1*/
+function displayTempChart() {
+    let chartElement = document.getElementById('chart1');
+    chartElement.style.display = 'block';
+    chartElement.classList.add('show');
+    let weekDay = [getDay(startTimeArr[0]), getDay(startTimeArr[1]), getDay(startTimeArr[2]), getDay(startTimeArr[3]), getDay(startTimeArr[4]), getDay(startTimeArr[5])]
+    Highcharts.chart('chart1', {
+        chart: {
+            type: 'arearange'
+        },
+        title: {
+            text: 'Temperature Ranges (Min, Max)'
+        },
+        xAxis: {
+            categories: [formatDateChart(startTimeArr[0]), formatDateChart(startTimeArr[1]), formatDateChart(startTimeArr[2]), formatDateChart(startTimeArr[3]), formatDateChart(startTimeArr[4]), formatDateChart(startTimeArr[5])],
+            crosshair: {
+                width: 1,
+                dashStyle: 'Solid',
+                color: 'rgb(189, 189, 189)'
+            }
+        },
+        series: [{
+            data: temperatureMax.slice(0,6).map((maxTemp, i) => [temperatureMin[i], maxTemp]),
+            fillOpacity: 0.5,
+            color: 'orange',
+            fillColor: {
+                linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                stops: [
+                    [0, 'rgba(255, 152, 0, 0.6)'], 
+                    [1, 'rgba(0, 121, 199, 0.4)']  
+                ]
+            }, 
+            marker: {
+                enabled: true,
+                radius: 4,
+                fillColor: '#5db4ee'
+            }
+        }],    
+        legend: {
+            enabled: false
+        },
+        tooltip: {
+            formatter: function() {
+                let day = weekDay[this.point.index]
+                let dateSplit = this.x.split(' ');
+                let flippedDate = `${dateSplit[1]} ${dateSplit[0]}`;
+                let blueDot = `<span style="color:#5db4ee;">&#9679;</span>`;
+                return `${day}, ${flippedDate}<br/>${blueDot}Temperatures: <b>${this.point.low}°F</b> - <b>${this.point.high}°F</b>`;
+            }
+        }
+    });
 }
