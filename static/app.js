@@ -12,7 +12,7 @@ precipitationType.set(2, "Snow");
 precipitationType.set(3, "Freezing Rain");
 precipitationType.set(4, "Ice Pellets");
 
-// Weather Codes - Status and SVG File
+// 'Weather' Codes - Status and SVG File
 const weatherCodeText = new Map();
 
 weatherCodeText.set(4201, ['Heavy Rain', '/static/weathercodes/rain_heavy.svg']); 
@@ -70,7 +70,6 @@ function disableFilds(e) {
 // clear button functionality
 document.getElementById('clear-btn').addEventListener('click', function(e) {
     e.preventDefault(); 
-    console.log("Clear button clicked, but form is not reset.");
     document.getElementById('street').value = '';  
     document.getElementById('city').value = '';
     document.getElementById('state').value = '';
@@ -87,9 +86,13 @@ document.getElementById('clear-btn').addEventListener('click', function(e) {
     document.querySelector('.chartHeading').style.display = 'none';
     document.querySelector('.downarrow').style.display = 'none';
     document.querySelector('#chart1').style.display = 'none';
+    document.querySelector('.downarrow').style.display = 'none';
+    document.querySelector('.uparrow').style.display = 'none';
+    document.querySelector('#chart1').style.display = 'none';
+    document.querySelector('#chart2').style.display = 'none';
+    document.querySelector('.error-handle').style.display = 'none';
 });
 function autoDetectIp() {
-    const token = "3ce693acafe8d1";
     const apiURL = "https://ipinfo.io/?token=3ce693acafe8d1"
     const xhr = new XMLHttpRequest();
     xhr.open("GET", apiURL, false);
@@ -98,13 +101,13 @@ function autoDetectIp() {
         return xhr.responseText;
     } else {
         console.log("Network Error - ipinfo.io");
+        document.querySelector('.error-handle').style.display = 'flex';
     }
 }
 
 function geocodingApi(street, city, state) {
     const apiKey = "AIzaSyC3CkllDKmcg7dPSQR1kYBd-b85SBMLVbo";
     state = statesID[states.indexOf(state)];
-    // const url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + street + city + state + "&key=" + apiKey;
     const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(street)},${encodeURIComponent(city)},${encodeURIComponent(state)}&key=${apiKey}`;
     console.log(url)
     const xhr = new XMLHttpRequest();
@@ -114,6 +117,7 @@ function geocodingApi(street, city, state) {
         return xhr.responseText;
     } else {
         console.log("Network Error - geocodingAPI");
+        document.querySelector('.error-handle').style.display = 'flex';
     }
 
 }
@@ -129,6 +133,7 @@ async function webServerCall(lat, log) {
         return data;
     } catch(error) {
         console.error('Error:', error);
+        document.querySelector('.error-handle').style.display = 'flex';
     }
 }
 // Array to populate the data
@@ -267,40 +272,47 @@ function searchResultsDOM(newAddress) {
 }
 // Form Submission, extracting data
 async function formSubmitted(e) {
+    document.querySelector('.error-handle').style.display = 'none';
     e.preventDefault();
-    let form = e.target;
-    let formData = new FormData(form);
-    let formDataJson = Object.fromEntries(formData);
-    console.log(formDataJson) // TO BE REMOVED
-    let json; 
-    let lat;
-    let log;
-    let newAddress;
-    if (formData.get('autodetect-location')) {
-        console.log("Call to Ipinfo")
-        json = autoDetectIp()
-        json = JSON.parse(json);
-        let city = json.city
-        let region = json.region
-        let country = json.country
-        newAddress = city + ', ' + region + ', ' + country
-        let latlog = json.loc.split(',');
-        lat = latlog[0];
-        log = latlog[1];
-    } else {
-        console.log("Call to Geocode API")
-        let streetId = formData.get('street');
-        let city = formData.get('city');
-        let state = formData.get('state');
-        json = geocodingApi(streetId, city, state);
-        json = JSON.parse(json);
-        console.log(json)
-        newAddress = json.results[0].formatted_address;
-        lat = json.results[0].geometry.location.lat;
-        log = json.results[0].geometry.location.lng;
+    // Form Validation
+    let street = document.getElementById('street').value.trim();
+    let city = document.getElementById('city').value.trim();
+    let state = document.getElementById('state').value.trim();
+    let checkbox = document.getElementById('autodetect-location').checked;
+    let resultFromAPI, newAddress, lat, lng;
+    let isValid = true;
+
+    // Autodetect Functionality
+    if (checkbox) {
+        resultFromAPI = checkBoxON();
+        lat = resultFromAPI.lat;
+        lng = resultFromAPI.lng;
+        newAddress = resultFromAPI.newAddress;
+        console.log("Calling Flask");
+        let data = await webServerCall(lat, lng);
+        extractValues(data, newAddress);
+    } else  { // checking if the fields are correct
+        if (street == '') {
+            isValid = false;
+        }
+        else if (city == '') {
+            isValid = false;
+        }
+        else if (state == '') {
+            isValid = false;
+        }
     }
-    let data = await webServerCall(lat, log)
-    extractValues(data, newAddress);
+
+    if (isValid && !checkbox) {
+        console.log('CheckBox Disabled & All Correct Fields');
+        resultFromAPI = validFields(street, city, state);
+        lat = resultFromAPI.lat;
+        lng = resultFromAPI.lng;
+        newAddress = resultFromAPI.newAddress;
+        console.log("Calling Flask");
+        let data = await webServerCall(lat, lng);
+        extractValues(data, newAddress);
+    }
 }
 
 // PART 2
@@ -316,6 +328,38 @@ table.addEventListener('click', function(event) {
         cardExpand(rowIndex, date, status)
     }
 });
+
+function checkBoxON() {
+        json = autoDetectIp()
+        json = JSON.parse(json);
+        console.log('Result from IpInfo', json);
+        let city = json.city
+        let region = json.region
+        let country = json.country
+        let newAddress = city + ', ' + region + ', ' + country
+        let latlng = json.loc.split(',');
+        let lat = latlng[0];
+        let lng = latlng[1];
+        return {lat: lat, lng: lng, newAddress: newAddress};
+}
+
+function validFields(streetId, city, state) {
+    try {
+        console.log('Call to GeoCode API')
+        let json = geocodingApi(streetId, city, state);
+        json = JSON.parse(json);
+        if (json.results && json.results.length > 0) {
+            let newAddress = json.results[0].formatted_address;
+            let lat = json.results[0].geometry.location.lat;
+            let lng = json.results[0].geometry.location.lng;
+            return {lat: lat, lng: lng, newAddress: newAddress};
+        } else {
+            throw new Error("No results");
+        } 
+    } catch (error) {
+        document.querySelector('.error-handle').style.display = 'flex';
+    }
+}
 
 function cardExpand(index, date, status) {
     document.getElementById('card3Date').innerHTML = date;
@@ -346,7 +390,15 @@ function converTime12Hr(time) {
     return laTime;
 }
 /* High Chart Functionality */
+document.querySelector('.uparrow').addEventListener('click', function() {
+    document.querySelector('.downarrow').style.display = 'block';
+    document.querySelector('.uparrow').style.display = 'none';
+    document.querySelector('#chart1').style.display = 'none';
+    document.querySelector('#chart2').style.display = 'none';
+});
 document.querySelector('.downarrow').addEventListener('click', function() {
+    document.querySelector('.downarrow').style.display = 'none';
+    document.querySelector('.uparrow').style.display = 'block';
     displayTempChart()});
 /* Code for displaying chart 1*/
 function displayTempChart() {
@@ -367,6 +419,12 @@ function displayTempChart() {
                 width: 1,
                 dashStyle: 'Solid',
                 color: 'rgb(189, 189, 189)'
+            }
+        },
+        yAxis: {
+            tickInterval: 5,
+            title: {
+                text: null
             }
         },
         series: [{
@@ -395,8 +453,15 @@ function displayTempChart() {
                 let dateSplit = this.x.split(' ');
                 let flippedDate = `${dateSplit[1]} ${dateSplit[0]}`;
                 let blueDot = `<span style="color:#5db4ee;">&#9679;</span>`;
-                return `${day}, ${flippedDate}<br/>${blueDot}Temperatures: <b>${this.point.low}°F</b> - <b>${this.point.high}°F</b>`;
+                let dateStyle = `<span style="font-size:10px;">${day}, ${flippedDate}</span>`
+                return `${dateStyle}<br/>${blueDot}Temperatures: <b>${this.point.low}°F</b> - <b>${this.point.high}°F</b>`;
             }
         }
     });
 }
+
+// Remove the checkbox
+window.addEventListener('DOMContentLoaded', (event) => {
+    document.getElementById('autodetect-location').checked = false;
+    document.getElementById('formApplication').reset();
+});

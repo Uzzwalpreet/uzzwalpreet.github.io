@@ -7,6 +7,7 @@ body {
     align-items: center;
 }
 .main {
+    padding-top: 30px;
     /* margin-left: 300px; */
     width: 510px;
     display: flex;
@@ -14,9 +15,18 @@ body {
     justify-content: center;
 }
 
+.main::before {
+    content: '';
+    position: absolute;
+    top: 38px;
+    justify-content: center;
+    width: 1px;
+    height: 30%;
+    background-color: rgb(180, 180, 180);
+}
+
 .search-body {
     height: 390px;
-    padding-top: 40px;
 }
 .main-info-div {
     height: 110px;
@@ -24,11 +34,13 @@ body {
     background-size: 1100px;
     padding-left: 30px;
     line-height: 15px;
+    border-top: 1px solid rgb(180, 180, 180);
+    border-right: 1px solid rgb(180, 180, 180);
 }
 #text-1 {
     font-size: 22px;
     font-weight: 600;
-    padding-top: 35px;
+    padding-top: 15px;
 }
 #text-2 {
     font-size: 17px;
@@ -38,6 +50,10 @@ body {
     padding-left: 30px;
     padding-top: 25px;
     background-color: white;
+    border-top: 1px solid rgb(180, 180, 180);
+    border-right: 1px solid rgb(180, 180, 180);
+    border-left: 1px solid rgb(180, 180, 180);
+    border-bottom: 2px solid rgb(180, 180, 180);
 }
 #required {
     color: red;
@@ -53,6 +69,8 @@ label {
 #street {
     width: 428px;
     height: 20px;
+    outline: none;
+    border: 1px solid lightgray;
 }
 .city-state-div {
     display: flex;
@@ -60,21 +78,33 @@ label {
     padding-top: 20px;
 }
 #state {
-    width: 215px
+    width: 215px;
 }
 #city {
     height: 20px;
+    outline: none;
+    box-shadow: none;
+    border: 1px solid lightgray;
 }
 .checkbox{
     padding-top: 8px;
     display: flex;
 }
-hr {
+#city:focus {
+    border: 1px solid black;
+}
+#street:focus {
+    border: 1px solid black;
+}
+#blueLine {
+    border: none;
+    background-color: rgb(34, 109, 179);
     margin-top: 20px;
     width: calc(100% - 40px);
     margin-left: 0;
-    background-color: #000;
+    height: 1px;
 }
+
 .button {
     padding-top: 15px;
 }
@@ -82,7 +112,7 @@ hr {
     border-radius: 0px;
     height: 40px;
     width: 90px;
-    background-color: #4c6caa;
+    background: linear-gradient(to bottom, #4c6caa 90%, #2e4474 90%);
     color: white;
     border: none;
 }
@@ -90,24 +120,30 @@ hr {
     border-radius: 0px;
     height: 40px;
     width: 90px;
-    background-color: rgb(252,180,4);
+    background: linear-gradient(to bottom, rgb(252,180,4) 90%, #f59125 90%);
     color: white;
     border: none;
 }
-/************ TOOLTIP *****************/
 
 /************ CARD1 *******************/
 .card {
-    height: 390px;
-    width: 690px;
+    height: 370px;
+    width: 670px;
     margin-top: 75px;
     padding-left: 20px;
     padding-right: 20px;
     background-color: white;
     /* margin-left: 200px; */
     display: none;
+    border-top: 1.5px solid rgb(204, 204, 204);
+    border-right: 1.5px solid rgb(204, 204, 204);
+    border-left: 1.5px solid rgb(204, 204, 204);
+    border-bottom: 3px solid rgb(204, 204, 204);
 }
 
+.card:hover {
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+}
 .card-section-1 {
     height: 40px;
     padding-top: 12px;
@@ -190,6 +226,9 @@ hr {
     margin-top: 7px;
     padding: 12px;
     padding-left: 60px;
+    border-right: 1px solid rgb(204, 204, 204);
+    border-left: 1px solid rgb(204, 204, 204);
+    border-bottom: 2px solid rgb(204, 204, 204);
 }
 .card2Image {
     width: 60px;
@@ -303,18 +342,45 @@ hr {
     text-align: left;
     font-size: 22px;
 }
-
-/************* DOWNARROW **************/
+.cardBox3:hover {
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+}
+/************* DOWNARROW/UPARRAOW **************/
 .downarrow {
     height: 40px;
     width: 40px;
     display: none;
+}
+.uparrow {
+    height: 40px;
+    width: 40px;
+    display: none
 }
 
 /************* CHART1 *****************/
 #chart1 {
     margin-top: 2px;
     height: 380px;
-    width: 820px;
+    width: 800px;
+    display: none;
+}
+
+.test {
+    color: #5ab6f3;
+}
+
+/************* ERROR-HANDLE-DIV ************/
+.error-handle {
+    display: flex;
+    margin-top: 35px;
+    height: 33px;
+    width: 510px;
+    border-top: 1px solid rgb(204, 204, 204);
+    border-right: 1px solid rgb(204, 204, 204);
+    border-left: 1px solid rgb(204, 204, 204);
+    border-bottom: 2px solid rgb(204, 204, 204);
+    background-color: white;
+    justify-content: center;
+    align-items: center;
     display: none;
 }

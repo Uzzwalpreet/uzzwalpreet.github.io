@@ -17,27 +17,24 @@
                     <p id="text-2">Fill out the form to get weather info !</p>
                 </div>
                 <div class="form-div">
-                    <form onsubmit="formSubmitted(event)">
+                    <form id="formApplication" onsubmit="formSubmitted(event)">
                         <div class="street-div">
                             <label for="street">Street<span id="required">*</span></label>
-                            <input type="text" id="street" name="street">
-                            <!-- <span class="tooltip" id="street-tooltip">Please fill out this field</span> -->
+                            <input type="text" id="street" name="street" required>
                         </div>
                         <div class="city-state-div">
                             <div class="city-div">
                                 <label for="city">City<span id="required">*</span></label>
-                                <input type="text" id="city" name="city">
-                                <!-- <span class="tooltip" id="city-tooltip">Please fill out this field</span> -->
+                                <input type="text" id="city" name="city" required>
                             </div>
                             <div class="state-div">
                                 <label for="state">State<span id="required">*</span></label>
-                                <select id="state" name="state">
-                                    <option value="">Select your state</option>
+                                <select id="state" name="state" required>
+                                    <option value="" disabled selected>Select your state</option>
                                 </select>
-                                <!-- <span class="tooltip" id="state-tooltip">Please select your state</span> -->
                             </div>
                         </div>
-                        <hr>
+                        <hr id="blueLine">
                         <div class="checkbox">
                             <label for="autodetect-location">Want us to auto-detect your location? Check here</label>
                             <input type="checkbox" id="autodetect-location" name="autodetect-location">
@@ -50,6 +47,7 @@
                 </div>
         </div>
     </div>
+    <div class="error-handle">No records have been found.</div>
     <div class="card">
         <div class="card-section-1">
             <span id="card-address">325 W Adams Blvd</span>
@@ -154,7 +152,9 @@
     <div class="chartHeading">Weather Charts</div>
     <hr id="whiteline2">
     <div><img class="downarrow" src="static/img/point-down-512.png"></div>
+    <div><img class="uparrow" src="static/img/point-up-512.png"></div>
     <div id="chart1"></div>
+    <div id="chart2"></div>
 </body>
 <script src="/static/app.js"></script>
 </html>
