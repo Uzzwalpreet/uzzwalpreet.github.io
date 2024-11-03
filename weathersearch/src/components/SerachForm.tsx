@@ -3,22 +3,39 @@ import Select from 'react-select';
 import { useLoadScript } from '@react-google-maps/api';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import NoRecord from './NoRecord';
+import ResultsTabs from './Results';
+import { WeatherData } from './Results';
 
 const usStates = [
   { value: 'AL', label: 'Alabama' }, { value: 'AK', label: 'Alaska' }, /* other states here */ { value: 'WY', label: 'Wyoming' }
 ];
 
-const googleApiKey = 'AIzaSyC3CkllDKmcg7dPSQR1kYBd-b85SBMLVboa';
+const googleApiKey = 'AIzaSyC3CkllDKmcg7dPSQR1kYBd-b85SBMLVbo';
 
 const SearchForm: React.FC = () => {
   const [street, setStreet] = useState('');
   const [city, setCity] = useState('');
   const [state, setState] = useState<{ value: string; label: string } | null>(null);
+  // AUTO DETECT HOOKS
+  const [detectedCity, setDetectedCity] = useState(''); 
+  const [detectedState, setDetectedState] = useState('');
   const [autoDetectEnabled, setAutoDetectEnabled] = useState(false);
+  
   const [cityOptions, setCityOptions] = useState<{ value: string; label: string }[]>([]);
   const [latLng, setLatLng] = useState<{ lat: number; lng: number } | null>(null);
   const [loadingLocation, setLoadingLocation] = useState(false);
+  
+  // NO-RECORD HOOK
   const [showNoRecord, setShowNoRecord] = useState(false);
+  
+  // FOR DISPLAYING THE RESULTS
+  const [backendData, setBackendData] = useState<WeatherData[]>([]);  
+  const [displayResults, setDisplayResults] = useState(false);
+  const [displayCity, setDisplayCity] = useState('');
+  const [displayState, setDisplayState] = useState('');
+
+
+
 
   const [errors, setErrors] = useState({
     street: false,
@@ -57,15 +74,24 @@ const SearchForm: React.FC = () => {
       const resposne = await fetch(`http://localhost:5001/testweather?lat=${latitude}&lng=${longitude}`);
       const data = await resposne.json();
       console.log("Data from backend:", data);
+      // hook to remove error tab
       setShowNoRecord(false);
+      // hooks for displaying results
+      setBackendData(data);
+      setDisplayResults(true);
     } catch (error) {
+      // hook to display error tab
       setShowNoRecord(true);
+      // hook to clear the backend data
+      setBackendData([]);
     }
   };
 
   const getGeocodeDate = async() => {
+    setBackendData([]);
+    setDisplayResults(false); 
     if (!state) {
-      console.error("State is required");
+      console.error("State is missing");
       return;
     }
     const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(street)},${encodeURIComponent(city)},${encodeURIComponent(state.label)}&key=${googleApiKey}`;
@@ -95,6 +121,8 @@ const SearchForm: React.FC = () => {
     } else if (!autoDetectEnabled) {
       getGeocodeDate();
     }
+    setDisplayCity(autoDetectEnabled ? detectedCity : city);
+    setDisplayState(autoDetectEnabled ? detectedState: state?.label || '');
   };
 
   const handleClear = () => {
@@ -105,6 +133,11 @@ const SearchForm: React.FC = () => {
     setCityOptions([]);
     setLatLng(null);
     setErrors({ street: false, city: false, state: false });
+    setDisplayResults(false);
+    setBackendData([]);
+    setShowNoRecord(false);
+    setDisplayCity('');
+    setDisplayState('');
   };
 
   const toggleAutoDetect = async () => {
@@ -115,6 +148,8 @@ const SearchForm: React.FC = () => {
         const response = await fetch(`https://ipinfo.io/?token=3ce693acafe8d1`);
         const data = await response.json();
         const [lat, lng] = data.loc.split(',').map(Number);
+        setDetectedCity(data.city);
+        setDetectedState(data.region);
         setLatLng({ lat, lng });
       } catch (error) {
         console.error("Failed to fetch location data", error);
@@ -255,6 +290,7 @@ const SearchForm: React.FC = () => {
           </div>
           <div>
             {showNoRecord ? <NoRecord/> : null}
+            {displayResults ? <ResultsTabs data={backendData} city={displayCity} state={displayState}/> : (showNoRecord && <NoRecord />)}         
           </div>
         </div>
       ) : (
