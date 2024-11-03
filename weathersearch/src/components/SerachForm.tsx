@@ -8,7 +8,7 @@ const usStates = [
   { value: 'AL', label: 'Alabama' }, { value: 'AK', label: 'Alaska' }, /* other states here */ { value: 'WY', label: 'Wyoming' }
 ];
 
-const googleApiKey = 'AIzaSyC3CkllDKmcg7dPSQR1kYBd-b85SBMLVbo';
+const googleApiKey = 'AIzaSyC3CkllDKmcg7dPSQR1kYBd-b85SBMLVboa';
 
 const SearchForm: React.FC = () => {
   const [street, setStreet] = useState('');
@@ -18,6 +18,7 @@ const SearchForm: React.FC = () => {
   const [cityOptions, setCityOptions] = useState<{ value: string; label: string }[]>([]);
   const [latLng, setLatLng] = useState<{ lat: number; lng: number } | null>(null);
   const [loadingLocation, setLoadingLocation] = useState(false);
+  const [showNoRecord, setShowNoRecord] = useState(false);
 
   const [errors, setErrors] = useState({
     street: false,
@@ -51,6 +52,17 @@ const SearchForm: React.FC = () => {
     validateField(fieldName, value);
   };
 
+  const fetchWeatherDataFromBackend = async (latitude: number, longitude : number) => {
+    try {
+      const resposne = await fetch(`http://localhost:5001/testweather?lat=${latitude}&lng=${longitude}`);
+      const data = await resposne.json();
+      console.log("Data from backend:", data);
+      setShowNoRecord(false);
+    } catch (error) {
+      setShowNoRecord(true);
+    }
+  };
+
   const getGeocodeDate = async() => {
     if (!state) {
       console.error("State is required");
@@ -65,25 +77,23 @@ const SearchForm: React.FC = () => {
         const location = data.results[0].geometry.location;
         setLatLng({lat : location.lat, lng : location.lng});
         console.log("Geocode Location", location);
+        setShowNoRecord(false);
+        fetchWeatherDataFromBackend(location.lat, location.lng);
       } else {
-        //TO DO 
-        //WHEN GEOCODE IS DOWN PRINT NO RECORDS FOUND
-        console.log("TO DO - SHOW NO RECORDS FOUND");
+        setShowNoRecord(true);
       }
     } catch(error) {
-        //TO DO 
-        //WHEN GEOCODE IS DOWN PRINT NO RECORDS FOUND
-        console.log("TO DO - SHOW NO RECORDS FOUND");
+        setShowNoRecord(true);
     }
-    };
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log({ street, city, state, autoDetectEnabled, latLng });
-    if (!autoDetectEnabled) {
+    if (autoDetectEnabled && latLng) {
+      fetchWeatherDataFromBackend(latLng.lat, latLng.lng);
+    } else if (!autoDetectEnabled) {
       getGeocodeDate();
-    } else {
-      console.log({ street, city, state, autoDetectEnabled, latLng });
     }
   };
 
@@ -100,21 +110,18 @@ const SearchForm: React.FC = () => {
   const toggleAutoDetect = async () => {
     setAutoDetectEnabled((prev) => !prev);
     if (!autoDetectEnabled) {
-      // Fetch location if checkbox is enabled
       setLoadingLocation(true);
       try {
         const response = await fetch(`https://ipinfo.io/?token=3ce693acafe8d1`);
         const data = await response.json();
         const [lat, lng] = data.loc.split(',').map(Number);
         setLatLng({ lat, lng });
-        console.log(data);
       } catch (error) {
         console.error("Failed to fetch location data", error);
       } finally {
         setLoadingLocation(false);
       }
     } else {
-      // Clear location data if checkbox is unchecked
       setLatLng(null);
     }
   };
@@ -245,6 +252,9 @@ const SearchForm: React.FC = () => {
           <div className="d-flex justify-content-center mt-4 gap-3">
             <a href="#results" className="btn btn-primary">Results</a>
             <a href="#favorites" className="btn btn-link">Favorites</a>
+          </div>
+          <div>
+            {showNoRecord ? <NoRecord/> : null}
           </div>
         </div>
       ) : (
