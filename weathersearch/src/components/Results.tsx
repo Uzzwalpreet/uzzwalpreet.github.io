@@ -2,21 +2,15 @@ import React, {useState} from "react";
 import DailyView from "./DailyView";
 import DailyTempChart from "./DailyTempChart";
 import Meteogram from "./Meteogram";
-
-export interface WeatherData {
-    date: String;
-    status: String;
-    tempHigh: number;
-    tempLow: number;
-    windSpeed: number;
-}
 interface ResultsProps {
-    data: WeatherData[];
+    data: any;
     city: string;
     state: string;
+    latitude: number;
+    longitude: number;
 }
 
-const ResultsTabs : React.FC<ResultsProps> = ({ data, city, state }) => {
+const ResultsTabs : React.FC<ResultsProps> = ({ data, city, state, latitude, longitude }) => {
     const [currentTab, setCurrentTab] = useState('dailyView');
     return (
         <div className="container mt-4">
@@ -51,7 +45,7 @@ const ResultsTabs : React.FC<ResultsProps> = ({ data, city, state }) => {
           <div className="card p-3 shadow-sm">
             {currentTab === 'dailyView' && <DailyView data={data} />}
             {currentTab === 'tempChart' && <DailyTempChart data={data} />}
-            {currentTab === 'meteogram' && <Meteogram data={data} />}
+            {currentTab === 'meteogram' && <Meteogram latitude={latitude} longitude={longitude} startTime={data.data.timelines[0].startTime} />}
           </div>
         </div>
       );

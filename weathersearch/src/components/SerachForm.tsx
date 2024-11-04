@@ -4,11 +4,10 @@ import { useLoadScript } from '@react-google-maps/api';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import NoRecord from './NoRecord';
 import ResultsTabs from './Results';
-import { WeatherData } from './Results';
 
 const usStates = [
-  { value: 'AL', label: 'Alabama' }, { value: 'AK', label: 'Alaska' }, /* other states here */ { value: 'WY', label: 'Wyoming' }
-];
+  { value: 'AL', label: 'Alabama' }, { value: 'AK', label: 'Alaska' }, { value: 'AZ', label: 'Arizona' }, { value: 'AR', label: 'Arkansas' }, { value: 'CA', label: 'California' }, { value: 'CO', label: 'Colorado' }, { value: 'CT', label: 'Connecticut' }, { value: 'DE', label: 'Delaware' }, { value: 'FL', label: 'Florida' }, { value: 'GA', label: 'Georgia' }, { value: 'HI', label: 'Hawaii' }, { value: 'ID', label: 'Idaho' }, { value: 'IL', label: 'Illinois' },{ value: 'IN', label: 'Indiana' },{ value: 'IA', label: 'Iowa' }, { value: 'KS', label: 'Kansas' }, { value: 'KY', label: 'Kentucky' }, { value: 'LA', label: 'Louisiana' }, { value: 'ME', label: 'Maine' }, { value: 'MD', label: 'Maryland' }, { value: 'MA', label: 'Massachusetts' }, { value: 'MI', label: 'Michigan' }, { value: 'MN', label: 'Minnesota' }, { value: 'MS', label: 'Mississippi' }, { value: 'MO', label: 'Missouri' }, { value: 'MT', label: 'Montana' }, 
+  { value: 'NE', label: 'Nebraska' }, { value: 'NV', label: 'Nevada' }, { value: 'NH', label: 'New Hampshire' }, { value: 'NJ', label: 'New Jersey' }, { value: 'NM', label: 'New Mexico' }, { value: 'NY', label: 'New York' }, { value: 'NC', label: 'North Carolina' }, { value: 'ND', label: 'North Dakota' }, { value: 'OH', label: 'Ohio' }, { value: 'OK', label: 'Oklahoma' }, { value: 'OR', label: 'Oregon' }, { value: 'PA', label: 'Pennsylvania' }, { value: 'RI', label: 'Rhode Island' }, { value: 'SC', label: 'South Carolina' }, { value: 'SD', label: 'South Dakota' }, { value: 'TN', label: 'Tennessee' }, { value: 'TX', label: 'Texas' }, { value: 'UT', label: 'Utah' }, { value: 'VT', label: 'Vermont' }, { value: 'VA', label: 'Virginia' }, { value: 'WA', label: 'Washington' }, { value: 'WV', label: 'West Virginia' }, { value: 'WI', label: 'Wisconsin' }, { value: 'WY', label: 'Wyoming' }];
 
 const googleApiKey = 'AIzaSyC3CkllDKmcg7dPSQR1kYBd-b85SBMLVbo';
 
@@ -29,7 +28,7 @@ const SearchForm: React.FC = () => {
   const [showNoRecord, setShowNoRecord] = useState(false);
   
   // FOR DISPLAYING THE RESULTS
-  const [backendData, setBackendData] = useState<WeatherData[]>([]);  
+  const [backendData, setBackendData] = useState<any[]>([]);  
   const [displayResults, setDisplayResults] = useState(false);
   const [displayCity, setDisplayCity] = useState('');
   const [displayState, setDisplayState] = useState('');
@@ -71,7 +70,7 @@ const SearchForm: React.FC = () => {
 
   const fetchWeatherDataFromBackend = async (latitude: number, longitude : number) => {
     try {
-      const resposne = await fetch(`http://localhost:5001/testweather?lat=${latitude}&lng=${longitude}`);
+      const resposne = await fetch(`http://localhost:5001/weather?lat=${latitude}&lng=${longitude}`);
       const data = await resposne.json();
       console.log("Data from backend:", data);
       // hook to remove error tab
@@ -289,8 +288,7 @@ const SearchForm: React.FC = () => {
             <a href="#favorites" className="btn btn-link">Favorites</a>
           </div>
           <div>
-            {showNoRecord ? <NoRecord/> : null}
-            {displayResults ? <ResultsTabs data={backendData} city={displayCity} state={displayState}/> : (showNoRecord && <NoRecord />)}         
+            {displayResults ? <ResultsTabs data={backendData} city={displayCity} state={displayState} latitude={latLng?.lat || 0} longitude={latLng?.lat || 0}/> : (showNoRecord && <NoRecord />)}         
           </div>
         </div>
       ) : (

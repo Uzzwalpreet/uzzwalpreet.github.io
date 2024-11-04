@@ -31,6 +31,29 @@ app.get('/weather', async (req, res) => {
   }
 });
 
+app.get('/weather-hourly', async (req, res) => {
+    console.log("Hourly Call")
+    const latitude = req.query.lat;
+    const longitude = req.query.lng;
+    const startTime = req.query.startTime;
+  
+    if (!latitude || !longitude) {
+      return res.status(400).json({ error: 'Latitude and longitude are required.' });
+    }
+  
+    const url = `https://api.tomorrow.io/v4/timelines?location=${latitude},${longitude}&fields=temperature,windSpeed,windDirection,humidity,pressureSeaLevel&units=imperial&startTime=${startTime}&timezone=America/Los_Angeles&apikey=${TOMORROW_API_KEY}`;
+  
+    try {
+      const response = await axios.get(url);
+      const data = response.data;
+      console.log(data);
+      res.json(data); 
+    } catch (error) {
+      console.error("Error fetching data from Tomorrow.io API:");
+      res.status(400).json({ error: 'Failed to fetch data from Tomorrow.io API' });
+    }
+  });
+
 app.get('/testweather', async (req, res) => {
     console.log("called");
     const data = {
