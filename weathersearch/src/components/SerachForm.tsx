@@ -32,9 +32,7 @@ const SearchForm: React.FC = () => {
   const [displayResults, setDisplayResults] = useState(false);
   const [displayCity, setDisplayCity] = useState('');
   const [displayState, setDisplayState] = useState('');
-
-
-
+  
 
   const [errors, setErrors] = useState({
     street: false,
@@ -68,23 +66,30 @@ const SearchForm: React.FC = () => {
     validateField(fieldName, value);
   };
 
-  const fetchWeatherDataFromBackend = async (latitude: number, longitude : number) => {
+  const fetchWeatherDataFromBackend = async (latitude: number, longitude: number) => {
     try {
-      const resposne = await fetch(`http://localhost:5001/weather?lat=${latitude}&lng=${longitude}`);
-      const data = await resposne.json();
-      console.log("Data from backend:", data);
-      // hook to remove error tab
-      setShowNoRecord(false);
-      // hooks for displaying results
-      setBackendData(data);
-      setDisplayResults(true);
+      const response = await fetch(`http://localhost:5001/testweather?lat=${latitude}&lng=${longitude}`);
+  
+      if (response.status === 200) {
+        const data = await response.json();
+        console.log("Data from backend:", data);
+        setShowNoRecord(false);
+        setBackendData(data);
+        setDisplayResults(true);
+      } else {
+        console.error(`Error: Received status code ${response.status}`);
+        setShowNoRecord(true);
+        setBackendData([]);
+        setDisplayResults(false);
+      }
     } catch (error) {
-      // hook to display error tab
+      console.error("Network or server error:", error);
       setShowNoRecord(true);
-      // hook to clear the backend data
       setBackendData([]);
+      setDisplayResults(false);
     }
   };
+  
 
   const getGeocodeDate = async() => {
     setBackendData([]);
@@ -114,6 +119,8 @@ const SearchForm: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setBackendData([]);
+    setDisplayResults(false); 
     console.log({ street, city, state, autoDetectEnabled, latLng });
     if (autoDetectEnabled && latLng) {
       fetchWeatherDataFromBackend(latLng.lat, latLng.lng);
@@ -177,12 +184,11 @@ const SearchForm: React.FC = () => {
   return (
     <div>
       {isLoaded ? (
-        <div className="container mt-5">
+        <div className="container">
           <div className="card p-4 shadow-sm" style={{ backgroundColor: '#f8f8f8' }}>
             <h4 className="text-center mb-4">Weather Search 🌤️</h4>
             <form onSubmit={handleSubmit}>
-              {/* Street Input */}
-              <div className="row mb-3">
+              <div className="row">
                 <label htmlFor="streetInput" className="col-sm-2 col-form-label">
                   Street<span className="text-danger">*</span>
                 </label>
@@ -201,9 +207,7 @@ const SearchForm: React.FC = () => {
                   {errors.street && <div className="text-danger">Please enter a valid street</div>}
                 </div>
               </div>
-
-              {/* City Input */}
-              <div className="row mb-3">
+              <div className="row">
                 <label htmlFor="cityInput" className="col-sm-2 col-form-label">
                   City<span className="text-danger">*</span>
                 </label>
@@ -222,9 +226,7 @@ const SearchForm: React.FC = () => {
                   {errors.city && <div className="text-danger">Please enter a valid city</div>}
                 </div>
               </div>
-
-              {/* State Select */}
-              <div className="row mb-3">
+              <div className="row">
                 <label htmlFor="stateSelect" className="col-sm-2 col-form-label">
                   State<span className="text-danger">*</span>
                 </label>
@@ -249,9 +251,10 @@ const SearchForm: React.FC = () => {
               </div>
 
               <hr className="my-4" />
-
-              {/* Autodetect Location Checkbox */}
               <div className="d-flex justify-content-center align-items-center mb-3">
+              <label className="form-check-label" htmlFor="autodetectCheckbox">
+                    Autodetect Location<span className="text-danger">*</span>
+                </label>
                 <div className="form-check">
                   <input
                     type="checkbox"
@@ -260,13 +263,10 @@ const SearchForm: React.FC = () => {
                     checked={autoDetectEnabled}
                     onChange={toggleAutoDetect}
                   />
-                  <label className="form-check-label" htmlFor="autodetectCheckbox">
-                    Autodetect Location<span className="text-danger">*</span>
-                  </label>
+                  <span>Current Location</span>
                 </div>
               </div>
 
-              {/* Action Buttons */}
               <div className="d-flex justify-content-center gap-3">
                 <button
                   type="submit"
@@ -281,14 +281,12 @@ const SearchForm: React.FC = () => {
               </div>
             </form>
           </div>
-
-          {/* Results and Favorites Links */}
           <div className="d-flex justify-content-center mt-4 gap-3">
             <a href="#results" className="btn btn-primary">Results</a>
             <a href="#favorites" className="btn btn-link">Favorites</a>
           </div>
           <div>
-            {displayResults ? <ResultsTabs data={backendData} city={displayCity} state={displayState} latitude={latLng?.lat || 0} longitude={latLng?.lat || 0}/> : (showNoRecord && <NoRecord />)}         
+            {displayResults && backendData ? <ResultsTabs data={backendData} city={displayCity} state={displayState} latitude={latLng?.lat || 0} longitude={latLng?.lat || 0}/> : (showNoRecord && <NoRecord />)}         
           </div>
         </div>
       ) : (
