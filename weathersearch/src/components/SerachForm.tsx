@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Select from 'react-select';
 import { useLoadScript } from '@react-google-maps/api';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 import NoRecord from './NoRecord';
 import ResultsTabs from './Results';
 
@@ -275,8 +276,8 @@ const SearchForm: React.FC = () => {
                 >
                   <i className="bi bi-search"></i> Search
                 </button>
-                <button type="button" className="btn btn-secondary d-flex align-items-center gap-2" onClick={handleClear}>
-                  <i className="bi bi-list"></i> Clear
+                <button type="button" className="btn btn-outline-secondary" onClick={handleClear}>
+                  <i className="bi bi-list-nested"></i> Clear
                 </button>
               </div>
             </form>
@@ -286,7 +287,7 @@ const SearchForm: React.FC = () => {
             <a href="#favorites" className="btn btn-link">Favorites</a>
           </div>
           <div>
-            {displayResults && backendData ? <ResultsTabs data={backendData} city={displayCity} state={displayState} latitude={latLng?.lat || 0} longitude={latLng?.lat || 0}/> : (showNoRecord && <NoRecord />)}         
+            {displayResults && backendData ? <ResultsTabs data={backendData} city={displayCity} state={displayState} latitude={latLng?.lat || 0} longitude={latLng?.lng || 0}/> : (showNoRecord && <NoRecord />)}         
           </div>
         </div>
       ) : (

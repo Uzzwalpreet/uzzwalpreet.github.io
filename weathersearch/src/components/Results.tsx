@@ -44,12 +44,12 @@ const ResultsTabs: React.FC<ResultsProps> = ({ data, city, state, latitude, long
 
     return (
         <div className="container mt-4">
-          <h4 className="text-center mb-4">
-            Forecast at {city}, {state}
-          </h4>
           
           {!showDetails && (
             <>
+              <h4 className="text-center mb-4">
+                    Forecast at {city}, {state}
+              </h4>
               <div className="mb-2" style={{ textAlign: "right" }}>
                 <button onClick={handleDetailsButtonClick} className="btn btn-link" style={{ color: "black" }}>
                   Details &gt;
@@ -98,6 +98,10 @@ const ResultsTabs: React.FC<ResultsProps> = ({ data, city, state, latitude, long
                 date={selectedDate || ''} 
                 onListClick={handleListClick} 
                 details={details || {}} 
+                city = {city || ''}
+                state = {state || ''}
+                lat = {latitude}
+                lng = {longitude}
               />
             )}
           </div>
