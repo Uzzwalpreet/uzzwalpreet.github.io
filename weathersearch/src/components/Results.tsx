@@ -75,7 +75,7 @@ const ResultsTabs: React.FC<ResultsProps> = ({ data, city, state, latitude, long
                           >
                               Daily View
                           </button>
-                      </li>
+                      </li> 
                       <li className="nav-item">
                           <button
                               className={`nav-link ${currentTab === 'tempChart' ? 'active' : ''}`}
