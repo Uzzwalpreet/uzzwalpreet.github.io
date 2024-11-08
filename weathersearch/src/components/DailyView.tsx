@@ -44,6 +44,12 @@ const DailyView: React.FC<{ data: any, onDateClick: (date: string) => void }> = 
     windSpeed: item.values.windSpeed,
   }));
 
+  const slideIn = {
+    hidden: { x: '100%', opacity: 0 },
+    visible: { x: 0, opacity: 1 },
+    exit: { x: '-100%', opacity: 0 }
+  };
+
   return (
     <div className="container mt-4">
       <table className="table">

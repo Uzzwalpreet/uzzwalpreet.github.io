@@ -8,7 +8,7 @@ interface DetailsViewProps {
   city: string;
   state: string;
   lat: number;
-  lng: number
+  lng: number;
 }
 
 const formatDate = (dateString: string) => {
@@ -38,7 +38,7 @@ const formatDate = (dateString: string) => {
   }
   
 const weatherCodeText = new Map<number, [string, string]>();
-  // Weather code mappings
+
 weatherCodeText.set(4201, ['Heavy Rain', '/static/weathercodes/rain_heavy.svg']); 
 weatherCodeText.set(4001, ['Rain', '/static/weathercodes/rain.svg']);
 weatherCodeText.set(4200, ['Light Rain', '/static/weathercodes/rain_light.svg']);
@@ -79,10 +79,6 @@ const DetailsView: React.FC<DetailsViewProps> = ({ date, onListClick, details, c
       });
     }
   }, [lat, lng]);
-  if (!details) {
-    return <p>No data available for the selected date.</p>;
-  }
-  console.log('detail page data:',details);
 
   const weatherStatus = getStatus(details.weatherCode) || "Unknown";
   const temperature = details.temperatureMax || "N/A";
@@ -107,16 +103,14 @@ const DetailsView: React.FC<DetailsViewProps> = ({ date, onListClick, details, c
       transition={{ duration: 0.5 }}
       className="details-view"
     >
-
     <div className="details-view">
-<div className="d-flex align-items-center justify-content-between">
-  <button onClick={onListClick} className="bi bi-chevron-left">List</button>
-  <h4 className="text-center mb-0 flex-grow-1">Details for {formatDate(date)}</h4>
-    <a className="twitter-share-button" href={`https://twitter.com/intent/tweet?text=${twitterText}`}>
-    <button className=" bi bi-twitter-x btn btn-light" style={{ fontSize: '1.5rem' }}> 
-      </button>
-    </a>
-</div>
+      <div className="d-flex align-items-center justify-content-between">
+          <button onClick={onListClick} className="bi bi-chevron-left">List</button>
+            <h4 className="text-center mb-0 flex-grow-1">Details for {formatDate(date)}</h4>
+                <a className="twitter-share-button" href={`https://twitter.com/intent/tweet?text=${twitterText}`}>
+                    <button className=" bi bi-twitter-x btn btn-light" style={{ fontSize: '1.5rem' }}> </button>
+               </a>
+      </div>
 
 
       <table className="table table-striped">
