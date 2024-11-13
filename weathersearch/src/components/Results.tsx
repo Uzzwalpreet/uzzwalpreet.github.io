@@ -11,13 +11,15 @@ interface ResultsProps {
     state: string;
     latitude: number;
     longitude: number;
+    isFavorite: boolean
 }
 
-const ResultsTabs: React.FC<ResultsProps> = ({ data, city, state, latitude, longitude }) => {
+const ResultsTabs: React.FC<ResultsProps> = ({ data, city, state, latitude, longitude, isFavorite}) => {
     const [currentTab, setCurrentTab] = useState('dailyView');
     const [selectedDate, setSelectedDate] = useState<string | null>(null);
     const [showDetails, setShowDetails] = useState(false);
     const [shouldAnimate, setShouldAnimate] = useState(false);
+    const [isFavoriteSet, setIsFavoriteSet] = useState(isFavorite);
 
     useEffect(() => {
         if (!selectedDate && data.data.timelines[0].intervals.length > 0) {
@@ -44,8 +46,52 @@ const ResultsTabs: React.FC<ResultsProps> = ({ data, city, state, latitude, long
 
     const handleTabChange = (tab : string) => {
       setCurrentTab(tab);
-      setShouldAnimate(false);  // Disable animations between DailyView, DailyTempChart, and Meteogram
+      setShouldAnimate(false); 
   };
+
+  const handleStarClick = async () => {
+    setIsFavoriteSet(!isFavoriteSet);
+
+    try {
+        if (isFavoriteSet) {
+            console.log("Call to delete the start data")
+            const response = await fetch(`http://localhost:5001/api/favorites/delete2`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    city,
+                    state
+                }),
+            });
+            if (!response.ok) {
+                throw new Error("Failed to delete data from the backend");
+            }
+            console.log("Data removed from favorites");
+        } else {
+            console.log("Data send to DB to star it")
+            const response = await fetch("http://localhost:5001/sendToDB", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    city,
+                    state,
+                    latitude,
+                    longitude,
+                }),
+            });
+            if (!response.ok) {
+                throw new Error("Failed to send data to the backend");
+            }
+            console.log("Data saved to favorites");
+        }
+    } catch (error) {
+        console.error("Error updating favorite status:", error);
+    }
+};
 
     const details = selectedDate ? data.data.timelines[0].intervals.find(
         (item: any) => item.startTime === selectedDate
@@ -63,10 +109,32 @@ const ResultsTabs: React.FC<ResultsProps> = ({ data, city, state, latitude, long
               <>
                   <h4 className="text-center mb-4">Forecast at {city}, {state}</h4>
                   <div className="mb-2" style={{ textAlign: "right" }}>
-                      <button onClick={handleDetailsButtonClick} className="btn btn-link" style={{ color: "black" }}>
-                          Details &gt;
-                      </button>
-                  </div>
+                        <div style={{ display: "inline-flex", alignItems: "center" }}>
+                            <button
+                                type="button"
+                                onClick={handleStarClick}
+                                className="btn d-flex align-items-center p-1 rounded"
+                                style={{
+                                    border: '1px solid black',
+                                    backgroundColor: 'transparent',
+                                    marginRight: '8px'
+                                }}>
+                                <span
+                                    className="material-icons"
+                                    style={{
+                                        color: isFavoriteSet ? 'yellow' : 'white',
+                                        WebkitTextStroke: '1px black'
+                                    }}>star</span>
+                            </button>
+                            <button 
+                                onClick={handleDetailsButtonClick} 
+                                className="btn btn-link" 
+                                style={{ color: "black" }}
+                            >
+                                Details &gt;
+                            </button>
+                        </div>
+                    </div>
                   <ul className="nav nav-tabs justify-content-end">
                       <li className="nav-item">
                           <button

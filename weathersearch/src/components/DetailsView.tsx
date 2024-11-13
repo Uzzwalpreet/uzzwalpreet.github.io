@@ -107,7 +107,7 @@ const DetailsView: React.FC<DetailsViewProps> = ({ date, onListClick, details, c
       <div className="d-flex align-items-center justify-content-between">
           <button onClick={onListClick} className="bi bi-chevron-left">List</button>
             <h4 className="text-center mb-0 flex-grow-1">Details for {formatDate(date)}</h4>
-                <a className="twitter-share-button" href={`https://twitter.com/intent/tweet?text=${twitterText}`}>
+                <a className="twitter-share-button" href={`https://twitter.com/intent/tweet?text=${twitterText}`} target="_blank" >
                     <button className=" bi bi-twitter-x btn btn-light" style={{ fontSize: '1.5rem' }}> </button>
                </a>
       </div>

@@ -5,35 +5,42 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import NoRecord from './NoRecord';
 import ResultsTabs from './Results';
+import Favorites from './Favorites';
 
 const usStates = [
-  { value: 'AL', label: 'Alabama' }, { value: 'AK', label: 'Alaska' }, { value: 'AZ', label: 'Arizona' }, { value: 'AR', label: 'Arkansas' }, { value: 'CA', label: 'California' }, { value: 'CO', label: 'Colorado' }, { value: 'CT', label: 'Connecticut' }, { value: 'DE', label: 'Delaware' }, { value: 'FL', label: 'Florida' }, { value: 'GA', label: 'Georgia' }, { value: 'HI', label: 'Hawaii' }, { value: 'ID', label: 'Idaho' }, { value: 'IL', label: 'Illinois' },{ value: 'IN', label: 'Indiana' },{ value: 'IA', label: 'Iowa' }, { value: 'KS', label: 'Kansas' }, { value: 'KY', label: 'Kentucky' }, { value: 'LA', label: 'Louisiana' }, { value: 'ME', label: 'Maine' }, { value: 'MD', label: 'Maryland' }, { value: 'MA', label: 'Massachusetts' }, { value: 'MI', label: 'Michigan' }, { value: 'MN', label: 'Minnesota' }, { value: 'MS', label: 'Mississippi' }, { value: 'MO', label: 'Missouri' }, { value: 'MT', label: 'Montana' }, 
+  { value: 'AL', label: 'Alabama' }, { value: 'AK', label: 'Alaska' }, { value: 'AZ', label: 'Arizona' }, { value: 'AR', label: 'Arkansas' }, { value: 'CA', label: 'California' }, { value: 'CO', label: 'Colorado' }, { value: 'CT', label: 'Connecticut' }, { value: 'DE', label: 'Delaware' }, { value: 'FL', label: 'Florida' }, { value: 'GA', label: 'Georgia' }, { value: 'HI', label: 'Hawaii' }, { value: 'ID', label: 'Idaho' }, { value: 'IL', label: 'Illinois' }, { value: 'IN', label: 'Indiana' },{ value: 'IA', label: 'Iowa' }, { value: 'KS', label: 'Kansas' }, { value: 'KY', label: 'Kentucky' }, { value: 'LA', label: 'Louisiana' }, { value: 'ME', label: 'Maine' }, { value: 'MD', label: 'Maryland' }, { value: 'MA', label: 'Massachusetts' }, { value: 'MI', label: 'Michigan' }, { value: 'MN', label: 'Minnesota' }, { value: 'MS', label: 'Mississippi' }, { value: 'MO', label: 'Missouri' }, { value: 'MT', label: 'Montana' }, 
   { value: 'NE', label: 'Nebraska' }, { value: 'NV', label: 'Nevada' }, { value: 'NH', label: 'New Hampshire' }, { value: 'NJ', label: 'New Jersey' }, { value: 'NM', label: 'New Mexico' }, { value: 'NY', label: 'New York' }, { value: 'NC', label: 'North Carolina' }, { value: 'ND', label: 'North Dakota' }, { value: 'OH', label: 'Ohio' }, { value: 'OK', label: 'Oklahoma' }, { value: 'OR', label: 'Oregon' }, { value: 'PA', label: 'Pennsylvania' }, { value: 'RI', label: 'Rhode Island' }, { value: 'SC', label: 'South Carolina' }, { value: 'SD', label: 'South Dakota' }, { value: 'TN', label: 'Tennessee' }, { value: 'TX', label: 'Texas' }, { value: 'UT', label: 'Utah' }, { value: 'VT', label: 'Vermont' }, { value: 'VA', label: 'Virginia' }, { value: 'WA', label: 'Washington' }, { value: 'WV', label: 'West Virginia' }, { value: 'WI', label: 'Wisconsin' }, { value: 'WY', label: 'Wyoming' }];
 
 const googleApiKey = 'AIzaSyC3CkllDKmcg7dPSQR1kYBd-b85SBMLVbo';
 
 const SearchForm: React.FC = () => {
+  const [loading, setLoading] = useState(false);
   const [street, setStreet] = useState('');
   const [city, setCity] = useState('');
   const [state, setState] = useState<{ value: string; label: string } | null>(null);
-  // AUTO DETECT HOOKS
   const [detectedCity, setDetectedCity] = useState(''); 
   const [detectedState, setDetectedState] = useState('');
   const [autoDetectEnabled, setAutoDetectEnabled] = useState(false);
+  const [latitude, setLatitude] = useState<number | null>(null);
+  const [longitude, setLongitude] = useState<number | null>(null);
   
   const [cityOptions, setCityOptions] = useState<{ value: string; label: string }[]>([]);
   const [latLng, setLatLng] = useState<{ lat: number; lng: number } | null>(null);
   const [loadingLocation, setLoadingLocation] = useState(false);
   
-  // NO-RECORD HOOK
   const [showNoRecord, setShowNoRecord] = useState(false);
   
-  // FOR DISPLAYING THE RESULTS
   const [backendData, setBackendData] = useState<any[]>([]);  
   const [displayResults, setDisplayResults] = useState(false);
   const [displayCity, setDisplayCity] = useState('');
   const [displayState, setDisplayState] = useState('');
+  const [favorites, setFavorites] = useState(false);
   
+  const [activeTab, setActiveTab] = useState('Results');
+  
+  const [progress, setProgress] = useState(0);
+
+  const [isFavorite, setIsFavorite] = useState(false);
 
   const [errors, setErrors] = useState({
     street: false,
@@ -63,6 +70,11 @@ const SearchForm: React.FC = () => {
     return isValid;
   };
 
+  const handleTabClick = (tab: string) => {
+    setActiveTab(tab);
+    setFavorites(true);
+  };
+
   const handleBlur = (fieldName: string, value: string | { value: string; label: string } | null) => {
     validateField(fieldName, value);
   };
@@ -70,44 +82,52 @@ const SearchForm: React.FC = () => {
   const fetchWeatherDataFromBackend = async (latitude: number, longitude: number) => {
     try {
       const response = await fetch(`http://localhost:5001/testweather?lat=${latitude}&lng=${longitude}`);
-  
       if (response.status === 200) {
         const data = await response.json();
-        console.log("Data from backend:", data);
-        setShowNoRecord(false);
         setBackendData(data);
         setDisplayResults(true);
+        setShowNoRecord(false);
       } else {
-        console.error(`Error: Received status code ${response.status}`);
         setShowNoRecord(true);
         setBackendData([]);
         setDisplayResults(false);
       }
     } catch (error) {
-      console.error("Network or server error:", error);
       setShowNoRecord(true);
       setBackendData([]);
       setDisplayResults(false);
+    } finally {
+      setLoading(false);
+      setProgress(100);
     }
   };
-  
 
-  const getGeocodeDate = async() => {
+  const getGeocodeDate = async () => {
+    setLoading(true);
     setBackendData([]);
-    setDisplayResults(false); 
+    setDisplayResults(false);
     if (!state) {
       console.error("State is missing");
       return;
     }
+
+    const interval = setInterval(() => {
+      setProgress((prevProgress) => {
+        if (prevProgress >= 90) {
+          clearInterval(interval); 
+          return prevProgress;
+        }
+        return prevProgress + 10; 
+      });
+    }, 300);
+
     const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(street)},${encodeURIComponent(city)},${encodeURIComponent(state.label)}&key=${googleApiKey}`;
-    console.log(url)
     try {
       const response = await fetch(url);
       const data = await response.json();
       if (data.status === 'OK' && data.results.length > 0) {
         const location = data.results[0].geometry.location;
         setLatLng({lat : location.lat, lng : location.lng});
-        console.log("Geocode Location", location);
         setShowNoRecord(false);
         fetchWeatherDataFromBackend(location.lat, location.lng);
       } else {
@@ -117,12 +137,22 @@ const SearchForm: React.FC = () => {
         setShowNoRecord(true);
     }
   };
+  
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true); 
     setBackendData([]);
     setDisplayResults(false); 
-    console.log({ street, city, state, autoDetectEnabled, latLng });
+    setIsFavorite(false);
+
+    console.log("call made")
+    // check to call DB if the city and state are present in DB
+    const checkResponse = await fetch(`http://localhost:5001/api/favorites/check?city=${autoDetectEnabled ? detectedCity : city}&state=${autoDetectEnabled ? detectedState: state?.label}`);
+    const { exists } = await checkResponse.json();
+    console.log("call made", exists)
+    setIsFavorite(exists);
+
     if (autoDetectEnabled && latLng) {
       fetchWeatherDataFromBackend(latLng.lat, latLng.lng);
     } else if (!autoDetectEnabled) {
@@ -145,6 +175,8 @@ const SearchForm: React.FC = () => {
     setShowNoRecord(false);
     setDisplayCity('');
     setDisplayState('');
+    setFavorites(false);
+    setActiveTab('Results');
   };
 
   const toggleAutoDetect = async () => {
@@ -168,10 +200,9 @@ const SearchForm: React.FC = () => {
     }
   };
 
-  // Function to check if form is valid for enabling the Search button
   const isFormValid = () => {
     return (
-      (autoDetectEnabled && latLng) || // Enable if location is detected
+      (autoDetectEnabled && latLng) || 
       (!autoDetectEnabled &&
         street.trim() !== '' &&
         city.trim() !== '' &&
@@ -180,6 +211,18 @@ const SearchForm: React.FC = () => {
         !errors.city &&
         !errors.state)
     );
+  };
+
+  const fetchWeatherDataForFavorite = async (latitude: number, longitude: number, city: string, state: string) => {
+    setLoading(true);
+    setDisplayCity(city);
+    setDisplayState(state);
+    setLatitude(latitude);
+    setLongitude(longitude);
+    setShowNoRecord(false);
+    await fetchWeatherDataFromBackend(latitude, longitude);
+    setActiveTab('Results');
+    setDisplayResults(true);
   };
 
   return (
@@ -253,7 +296,7 @@ const SearchForm: React.FC = () => {
 
               <hr className="my-4" />
               <div className="d-flex justify-content-center align-items-center mb-3">
-              <label className="form-check-label" htmlFor="autodetectCheckbox">
+                <label className="form-check-label" htmlFor="autodetectCheckbox">
                     Autodetect Location<span className="text-danger">*</span>
                 </label>
                 <div className="form-check">
@@ -272,7 +315,7 @@ const SearchForm: React.FC = () => {
                 <button
                   type="submit"
                   className="btn btn-primary d-flex align-items-center gap-2"
-                  disabled={!isFormValid() || loadingLocation}
+                  disabled={!isFormValid() || loadingLocation || loading}
                 >
                   <i className="bi bi-search"></i> Search
                 </button>
@@ -282,14 +325,55 @@ const SearchForm: React.FC = () => {
               </div>
             </form>
           </div>
-          <div className="d-flex justify-content-center mt-4 gap-3">
-            <a href="#results" className="btn btn-primary">Results</a>
-            <a href="#favorites" className="btn btn-link">Favorites</a>
+
+          {loading && (
+            <div className="progress mt-4">
+              <div
+                className="progress-bar progress-bar-striped progress-bar-animated"
+                role="progressbar"
+                style={{ width: `${progress}%` }}
+                aria-valuenow={progress}
+                aria-valuemin={0}
+                aria-valuemax={100}
+              >
+                {progress}%
+              </div>
+            </div>
+          )}
+        <div>
+      <div className="d-flex justify-content-center mt-4 gap-3">
+        <button
+          className={`btn ${activeTab === 'Results' ? 'btn-primary' : 'btn-outline-primary'}`}
+          onClick={() => handleTabClick('Results')}
+        >
+          Results
+        </button>
+        <button
+          className={`btn ${activeTab === 'Favorites' ? 'btn-primary' : 'btn-outline-primary'}`}
+          onClick={() => handleTabClick('Favorites')}
+        >
+          Favorites
+        </button>
+      </div>
+      
+      <div className="mt-4">
+            {activeTab === 'Results' && displayResults ? (
+              <ResultsTabs
+                data={backendData}
+                city={displayCity}
+                state={displayState}
+                latitude={latLng?.lat || 0}
+                longitude={latLng?.lat || 0}
+                isFavorite={isFavorite}
+              />
+            ) : activeTab === 'Favorites' ? (
+              <Favorites fetchWeatherDataForFavorite={fetchWeatherDataForFavorite} />
+            ) : activeTab === 'Results' && showNoRecord ? (
+              <NoRecord />
+            ) : null}
           </div>
-          <div>
-            {displayResults && backendData ? <ResultsTabs data={backendData} city={displayCity} state={displayState} latitude={latLng?.lat || 0} longitude={latLng?.lng || 0}/> : (showNoRecord && <NoRecord />)}         
-          </div>
-        </div>
+    </div>
+  </div>
       ) : (
         <div>Loading...</div>
       )}

@@ -20,7 +20,7 @@ const Meteogram: React.FC<MeteogramProps> = ({ latitude, longitude, startTime })
   const [winds, setWinds] = useState<{ x: number; value: number; direction: number }[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  // Fetch weather data from the backend
+
   useEffect(() => {
     const fetchWeatherData = async () => {
       setLoading(true);
@@ -28,7 +28,7 @@ const Meteogram: React.FC<MeteogramProps> = ({ latitude, longitude, startTime })
 
       try {
         const response = await fetch(
-          `http://localhost:5001/testweather-hourly?lat=${latitude}&lng=${longitude}&startTime=${startTime}`
+          `http://localhost:5001/weather-hourly?lat=${latitude}&lng=${longitude}&startTime=${startTime}`
         );
         if (!response.ok) {
           throw new Error('Failed to fetch weather data');

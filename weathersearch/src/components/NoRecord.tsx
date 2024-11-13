@@ -7,5 +7,4 @@ const NoRecord: React.FC = () => {
         </>
     )
 }
-
 export default NoRecord;
