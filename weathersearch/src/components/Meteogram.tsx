@@ -28,7 +28,7 @@ const Meteogram: React.FC<MeteogramProps> = ({ latitude, longitude, startTime })
 
       try {
         const response = await fetch(
-          `http://localhost:5001/weather-hourly?lat=${latitude}&lng=${longitude}&startTime=${startTime}`
+          `https://assignmentthreebackenduzzwal.wl.r.appspot.com/weather-hourly?lat=${latitude}&lng=${longitude}&startTime=${startTime}`
         );
         if (!response.ok) {
           throw new Error('Failed to fetch weather data');
@@ -45,7 +45,6 @@ const Meteogram: React.FC<MeteogramProps> = ({ latitude, longitude, startTime })
     fetchWeatherData();
   }, [latitude, longitude, startTime]);
 
-  // Parse the fetched data and set state variables
   const parseWeatherData = (data: any) => {
     const tempData: { x: number; y: number }[] = [];
     const humData: { x: number; y: number }[] = [];
@@ -61,7 +60,7 @@ const Meteogram: React.FC<MeteogramProps> = ({ latitude, longitude, startTime })
       humData.push({ x, y: Math.round(values.humidity) });
       airPressureData.push({ x, y: Math.round(values.pressureSeaLevel) });
 
-      if (i % 2 === 0) { // Only add wind data every other interval
+      if (i % 2 === 0) { 
         windData.push({
           x,
           value: Math.round(values.windSpeed),
@@ -76,7 +75,6 @@ const Meteogram: React.FC<MeteogramProps> = ({ latitude, longitude, startTime })
     setWinds(windData);
   };
 
-  // Chart options
   const getChartOptions = (): Highcharts.Options => ({
     chart: {
       renderTo: 'chart2',
@@ -99,7 +97,7 @@ const Meteogram: React.FC<MeteogramProps> = ({ latitude, longitude, startTime })
       }
     },
     legend: {
-      enabled: false // Disable the legend for the entire chart
+      enabled: false
     },
     xAxis: [
       {
@@ -145,7 +143,7 @@ const Meteogram: React.FC<MeteogramProps> = ({ latitude, longitude, startTime })
         tickInterval: 1,
         gridLineColor: 'rgba(128, 128, 128, 0.1)'
       },
-      { // precipitation axis
+      { 
         title: { text: null },
         labels: { enabled: false },
         gridLineWidth: 0,
@@ -214,7 +212,6 @@ const Meteogram: React.FC<MeteogramProps> = ({ latitude, longitude, startTime })
         marker: { enabled: false },
         shadow: false,
         tooltip: { valueSuffix: ' inHg' },
-        // dashStyle: 'shortdot',
         yAxis: 2
       },
       {

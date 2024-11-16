@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Select from 'react-select';
-import { useLoadScript } from '@react-google-maps/api';
+import { LoadScriptNext, useLoadScript, Libraries } from '@react-google-maps/api';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import NoRecord from './NoRecord';
@@ -48,28 +48,69 @@ const SearchForm: React.FC = () => {
     state: false,
   });
 
+  const libraries: Libraries = ['places']; 
+
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: googleApiKey,
-    libraries: ['places'],
+    libraries, 
   });
+
+  const fetchCitySuggestions = (input: string) => {
+    if (!input) {
+      setCityOptions([]);
+      return;
+    }
+
+    const autocompleteService = new google.maps.places.AutocompleteService();
+
+    autocompleteService.getPlacePredictions(
+      {
+        input,
+        types: ['(cities)'],
+        componentRestrictions: { country: 'us' },
+      },
+      (predictions, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK && predictions) {
+          const suggestions = predictions.map((prediction) => ({
+            value: prediction.place_id,
+            label: prediction.structured_formatting.main_text,
+          }));
+          setCityOptions(suggestions);
+        } else {
+          setCityOptions([]);
+        }
+      }
+    );
+  };
+
+  const handleCityInputChange = (input: string) => {
+    setCity(input);
+    fetchCitySuggestions(input);
+  };
 
   const validateField = (fieldName: string, value: string | { value: string; label: string } | null) => {
     let isValid = true;
-
-    if (typeof value === 'string' && (!value.trim() || value === '')) {
-      isValid = false;
-    } else if (fieldName === 'state' && !value) {
-      isValid = false;
+  
+    if (fieldName === 'city') {
+      isValid =
+        value !== null &&
+        typeof value === 'string' &&
+        value.trim() !== '' &&
+        cityOptions.some((option) => option.label === value);
+    } else if (fieldName === 'street' && typeof value === 'string') {
+      isValid = value.trim() !== '';
+    } else if (fieldName === 'state') {
+      isValid = value !== null;
     }
-
+  
     setErrors((prevErrors) => ({
       ...prevErrors,
       [fieldName]: !isValid,
     }));
-
+  
     return isValid;
   };
-
+  
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
     setFavorites(true);
@@ -81,7 +122,9 @@ const SearchForm: React.FC = () => {
 
   const fetchWeatherDataFromBackend = async (latitude: number, longitude: number) => {
     try {
-      const response = await fetch(`http://localhost:5001/testweather?lat=${latitude}&lng=${longitude}`);
+       //const response = await fetch(`http://localhost:8080/weather?lat=${latitude}&lng=${longitude}`);
+        const response = await fetch(`https://assignmentthreebackenduzzwal.wl.r.appspot.com/weather?lat=${latitude}&lng=${longitude}`);
+
       if (response.status === 200) {
         const data = await response.json();
         setBackendData(data);
@@ -145,10 +188,9 @@ const SearchForm: React.FC = () => {
     setBackendData([]);
     setDisplayResults(false); 
     setIsFavorite(false);
-
-    console.log("call made")
+    setActiveTab('Results');
     // check to call DB if the city and state are present in DB
-    const checkResponse = await fetch(`http://localhost:5001/api/favorites/check?city=${autoDetectEnabled ? detectedCity : city}&state=${autoDetectEnabled ? detectedState: state?.label}`);
+    const checkResponse = await fetch(`https://assignmentthreebackenduzzwal.wl.r.appspot.com/api/favorites/check?city=${autoDetectEnabled ? detectedCity : city}&state=${autoDetectEnabled ? detectedState: state?.label}`);
     const { exists } = await checkResponse.json();
     console.log("call made", exists)
     setIsFavorite(exists);
@@ -220,11 +262,18 @@ const SearchForm: React.FC = () => {
     setLatitude(latitude);
     setLongitude(longitude);
     setShowNoRecord(false);
-    await fetchWeatherDataFromBackend(latitude, longitude);
-    setActiveTab('Results');
-    setDisplayResults(true);
+  
+    try {
+      await fetchWeatherDataFromBackend(latitude, longitude);
+  
+      setIsFavorite(true);
+    } catch (error) {
+      console.error("Error fetching weather data for favorite:", error);
+    } finally {
+      setActiveTab('Results');
+      setDisplayResults(true);
+    }
   };
-
   return (
     <div>
       {isLoaded ? (
@@ -261,20 +310,28 @@ const SearchForm: React.FC = () => {
                     className="form-control"
                     id="cityInput"
                     value={city}
-                    onChange={(e) => setCity(e.target.value)}
-                    onBlur={() => handleBlur('city', city)}
+                    onChange={(e) => handleCityInputChange(e.target.value)}
+                    onBlur={() => validateField('city', city)}
                     disabled={autoDetectEnabled}
                     required
+                    list="city-options"
                     style={errors.city ? { borderColor: 'red' } : {}}
                   />
+                  <datalist id="city-options">
+                    {cityOptions.map((option) => (
+                      <option key={option.value} value={option.label} />
+                    ))}
+                  </datalist>
                   {errors.city && <div className="text-danger">Please enter a valid city</div>}
                 </div>
               </div>
+
+
               <div className="row">
                 <label htmlFor="stateSelect" className="col-sm-2 col-form-label">
                   State<span className="text-danger">*</span>
                 </label>
-                <div className="col-sm-10">
+                <div className="col-sm-5">
                   <Select
                     id="stateSelect"
                     options={usStates}
@@ -341,20 +398,22 @@ const SearchForm: React.FC = () => {
             </div>
           )}
         <div>
-      <div className="d-flex justify-content-center mt-4 gap-3">
-        <button
-          className={`btn ${activeTab === 'Results' ? 'btn-primary' : 'btn-outline-primary'}`}
-          onClick={() => handleTabClick('Results')}
-        >
-          Results
-        </button>
-        <button
-          className={`btn ${activeTab === 'Favorites' ? 'btn-primary' : 'btn-outline-primary'}`}
-          onClick={() => handleTabClick('Favorites')}
-        >
-          Favorites
-        </button>
-      </div>
+        <div className="d-flex justify-content-center mt-4 gap-3">
+          <button
+            className={`btn ${activeTab === 'Results' ? 'btn-primary' : 'no-border'}`}
+            onClick={() => handleTabClick('Results')}
+          >
+            Results
+          </button>
+          <button
+            className={`btn ${activeTab === 'Favorites' ? 'btn-primary' : 'no-border'}`}
+            onClick={() => handleTabClick('Favorites')}
+          >
+            Favorites
+          </button>
+        </div>
+
+
       
       <div className="mt-4">
             {activeTab === 'Results' && displayResults ? (
@@ -363,7 +422,7 @@ const SearchForm: React.FC = () => {
                 city={displayCity}
                 state={displayState}
                 latitude={latLng?.lat || 0}
-                longitude={latLng?.lat || 0}
+                longitude={latLng?.lng || 0}
                 isFavorite={isFavorite}
               />
             ) : activeTab === 'Favorites' ? (

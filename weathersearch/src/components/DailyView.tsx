@@ -71,12 +71,32 @@ const DailyView: React.FC<{ data: any, onDateClick: (date: string) => void }> = 
             const weatherImage = weatherInfo ? weatherInfo[1] : '';
 
             return (
-              <tr key={index} onClick={() => onDateClick(interval.date)} style={{ cursor: "pointer" }}>
+              <tr
+                key={index}
+                onClick={() => onDateClick(interval.date)}
+                style={{ cursor: "pointer" }}
+              >
                 <td>{index + 1}</td>
-                <td>{formattedDate}</td>
+                <td>
+                  <span
+                    style={{
+                      color: "#007bff",
+                      textDecoration: "underline",
+                      cursor: "pointer",
+                    }}
+                  >
+                    {formattedDate}
+                  </span>
+                </td>
                 <td>
                   {weatherImage && (
-                    <img src={weatherImage} alt={weatherDescription} width="30" height="30" className="mr-2" />
+                    <img
+                      src={weatherImage}
+                      alt={weatherDescription}
+                      width="30"
+                      height="30"
+                      className="mr-2" id="weatherimgicon"
+                    />
                   )}
                   <span>{weatherDescription}</span>
                 </td>

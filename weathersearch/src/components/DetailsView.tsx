@@ -116,7 +116,7 @@ const DetailsView: React.FC<DetailsViewProps> = ({ date, onListClick, details, c
       <table className="table table-striped">
         <tbody>
           <tr>
-            <th>Status</th>
+            <th style={{width: '30%'}}>Status</th>
             <td>{getStatus(details.weatherCode) || "N/A"}</td>
           </tr>
           <tr>

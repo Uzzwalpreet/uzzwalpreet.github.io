@@ -23,11 +23,11 @@ const Favorites: React.FC<FavoritesProps> = ({ fetchWeatherDataForFavorite }) =>
   useEffect(() => {
     const fetchFavorites = async () => {
       try {
-        const response = await fetch('http://localhost:5001/api/favorites');
+        const response = await fetch('https://assignmentthreebackenduzzwal.wl.r.appspot.com/api/favorites');
         const data: FavoriteData[] = await response.json();
         setFavoritesData(data);
       } catch (error) {
-        console.error("Error fetching favorites:", error);
+        console.error("Error fetching favorites data from database:", error);
       } finally {
         setIsLoading(false);
       }
@@ -39,20 +39,20 @@ const Favorites: React.FC<FavoritesProps> = ({ fetchWeatherDataForFavorite }) =>
     fetchWeatherDataForFavorite(item.latitude, item.longitude, item.city, item.state);
   };
 
+  
   const handleDelete = async (id: string) => {
-    console.log("Handle Delete Favorites")
     try {
-      const response = await fetch(`http://localhost:5001/api/delete/${id}`, {
+      const response = await fetch(`https://assignmentthreebackenduzzwal.wl.r.appspot.com/api/delete/${id}`, {
         method: 'DELETE',
       });
       if (response.ok) {
         setFavoritesData(favoritesData.filter((item) => item._id !== id));
-        console.log("Deleted item:", id);
+        console.log("Deleted item succesfully the ID is:", id);
       } else {
-        console.error("Failed to delete item:", id);
+        console.error("Failed to delete item from the Mongo DB:", id);
       }
     } catch (error) {
-      console.error("Error deleting item:", error);
+      console.error("Error deleting item from Mongo DB:", error);
     }
   };
 

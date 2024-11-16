@@ -11,3 +11,45 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.no-border {
+  border: none !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  color: #007bff; }
+
+.no-border:hover {
+  background-color: transparent !important; 
+  color: #0056b3; 
+  text-decoration: underline; 
+}
+
+@media (max-width: 844px) {
+  .nav-tabs {
+    display: flex; 
+    flex-wrap: nowrap; 
+    overflow-x: auto;
+  }
+
+  .nav-tabs .nav-item .nav-link {
+    font-size: 0.7rem; 
+    white-space: nowrap; 
+    padding: 0.4rem 0.75rem;
+  }
+  .table {
+    width: 100%; 
+    border-collapse: collapse; 
+  }
+  .table th, .table  td {
+    font-size: 0.7rem; 
+    padding: 0.2rem; 
+    word-wrap: break-word;
+  }
+  .table{
+    font-size: 0.7rem; 
+  }
+  #weatherimgicon {
+    width: 22px;
+    height: 22px;
+  }
+}
