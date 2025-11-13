@@ -1,0 +1,4 @@
+Hi, I’m Uzzwal — a creative full-stack engineer who loves building systems
+that move, scale, and make life easier.
+
+I mix backend engineering with imagination to build meaningful products.

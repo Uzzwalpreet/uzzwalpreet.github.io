@@ -1,0 +1,127 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap');
+
+body {
+    margin: 0;
+    background: #0A092D;
+    color: #00FFFF;
+    font-family: 'Fira Code', monospace;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 25px;
+    color: white;
+}
+
+.logo {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+nav button {
+    background: transparent;
+    border: none;
+    color: white;
+    margin-left: 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+nav button:hover {
+    color: #00FFFF;
+}
+
+.socials img {
+    width: 25px;
+    margin-left: 15px;
+    opacity: 0.8;
+}
+.socials img:hover {
+    opacity: 1;
+}
+
+#terminal {
+    width: 90%;
+    max-width: 900px;
+    margin: 80px auto;
+    background: #000000;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,255,255,0.2);
+}
+
+#output {
+    white-space: pre-wrap;
+    margin-bottom: 20px;
+    min-height: 400px;
+}
+
+.input-line {
+    display: flex;
+    align-items: center;
+}
+.prompt {
+    margin-right: 8px;
+    color: #00FF99;
+}
+
+#terminal-input {
+    background: black;
+    border: none;
+    color: #00FFFF;
+    outline: none;
+    width: 100%;
+    font-size: 16px;
+}
+
+/* ------------------------- */
+/* SKILL CARDS */
+/* ------------------------- */
+
+.skill-container {
+    display: flex;
+    gap: 40px;
+    margin-top: 20px;
+}
+
+.skill-card {
+    background: #1a1f29;
+    padding: 20px 30px;
+    width: 260px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,255,255,0.15);
+    animation: fadeIn 0.6s ease forwards;
+}
+
+.skill-title {
+    padding: 10px;
+    font-weight: 700;
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+.skill-title.green {
+    background: #b6d7a8;
+    color: black;
+}
+
+.skill-title.blue {
+    background: #add8e6;
+    color: black;
+}
+
+.skill-card ul {
+    list-style: none;
+    padding: 0;
+}
+
+.skill-card li {
+    margin: 8px 0;
+    font-size: 16px;
+    color: white;
+}
+
+@keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(10px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
