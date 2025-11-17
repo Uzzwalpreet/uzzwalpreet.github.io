@@ -5,8 +5,6 @@ let cwd = "files";
 let history = [];
 let historyIndex = 0;
 
-/* ---------------- Handle Keyboard Input ---------------- */
-
 input.addEventListener("keydown", async (e) => {
     if (e.key === "Enter") {
         let cmd = input.value.trim();
@@ -34,14 +32,10 @@ input.addEventListener("keydown", async (e) => {
     }
 });
 
-/* ---------------- Print to Terminal ---------------- */
-
 function print(text) {
     output.innerHTML += text + "\n";
     output.scrollTop = output.scrollHeight;
 }
-
-/* ---------------- Command Handler ---------------- */
 
 async function handleCommand(cmd) {
     const parts = cmd.split(" ");
@@ -53,7 +47,6 @@ async function handleCommand(cmd) {
 
     else if (base === "cat") {
         let file = parts[1];
-        if (!file) return print("Usage: cat <filename>");
         loadFile(file);
     }
 
@@ -62,20 +55,13 @@ async function handleCommand(cmd) {
     }
 
     else if (base === "help") {
-        print(
-            "Commands:\n" +
-            "  ls\n" +
-            "  cat <file>\n" +
-            "  show skills\n" +
-            "  clear\n" +
-            "  help\n" +
-            "  sudo"
-        );
+        print("Commands:\nls\ncat <file>\nshow skills\nclear\nhelp\nsudo");
     }
 
     else if (base === "sudo") {
         print("Entering admin mode...\n");
         print("Welcome Commander.\n");
+        output.innerHTML += `<img src="assets/profile.jpg" style="width:200px;border-radius:10px;margin-top:15px">`;
     }
 
     else if (base === "show" && parts[1] === "skills") {
@@ -87,8 +73,6 @@ async function handleCommand(cmd) {
     }
 }
 
-/* ---------------- Load Text File ---------------- */
-
 async function loadFile(file) {
     try {
         let text = await fetch(`${cwd}/${file}`).then(r => r.text());
@@ -97,8 +81,6 @@ async function loadFile(file) {
         print(`No such file: ${file}`);
     }
 }
-
-/* ---------------- Navbar Button Commands ---------------- */
 
 function runPreset(filename) {
     print(`uzzwal@dev:~$ cat ${filename}`);
@@ -109,8 +91,6 @@ function runShowSkills() {
     print(`uzzwal@dev:~$ show skills`);
     showSkillsUI();
 }
-
-/* ---------------- Skill Cards UI ---------------- */
 
 function showSkillsUI() {
     print("Loading skill modules...\n");
@@ -148,7 +128,6 @@ function showSkillsUI() {
 
         </div>
         `;
-
         output.scrollTop = output.scrollHeight;
     }, 600);
 }

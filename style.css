@@ -49,7 +49,6 @@ nav button:hover {
     text-shadow: 0 0 10px #00FFFF;
 }
 
-
 /* ---------------- Terminal ---------------- */
 
 #terminal {
@@ -64,13 +63,14 @@ nav button:hover {
     padding: 25px 30px;
     box-sizing: border-box;
 
-    /* REMOVED: overflow-y: auto; */
+    overflow-y: auto;
+
 
     display: flex;
-    /* *** KEY CHANGE: Display children from bottom up *** */
-    flex-direction: column-reverse; 
+    flex-direction: column;
 }
 
+/* place prompt at top */
 .top-input {
     margin-bottom: 15px;
 }
