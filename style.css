@@ -30,19 +30,23 @@ header {
     letter-spacing: 1px;
 }
 
+/* ------------------- BUTTON ---------------- */
+nav {
+    padding-right: 20px; 
+}
+
 nav button {
     background: transparent;
     border: none;
     color: white;
-    margin-left: 20px;
-    font-size: 10px;
+    margin-right: 15px;
+    font-size: 15px;
     cursor: pointer;
     transition: 0.3s;
 }
 
 nav button:hover {
-    color: #00FFFF;
-    text-shadow: 0 0 10px #00FFFF;
+    color: #00FF99;
 }
 
 /* ---------------- Terminal ---------------- */
@@ -66,16 +70,15 @@ nav button:hover {
     flex-direction: column;
 }
 
-/* place prompt at top */
-.top-input {
-    margin-bottom: 15px;
-}
 
 #output {
+    color: #00FF99;
     white-space: pre-wrap;
     padding-right: 10px;
     flex-grow: 1;
     overflow-y: auto;
+    /* Set this on the container that holds all terminal history */
+    overflow-x: hidden; /* Hides any horizontal overflow */
 }
 
 /* input line */
@@ -90,14 +93,16 @@ nav button:hover {
     color: #00FF99;
 }
 
-#terminal-input {
+.cmd-input {
     background: black;
     border: none;
     color: #00FFFF;
     outline: none;
-    width: 100%;
     font-size: 16px;
+    width: auto;
+    flex-grow: 1;
 }
+
 
 /* ---------------- Skill Cards ---------------- */
 

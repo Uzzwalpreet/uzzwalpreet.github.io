@@ -1,43 +1,94 @@
-const output = document.getElementById("output");
-const input = document.getElementById("terminal-input");
+// ------------------ SELECT OUTPUT WINDOW ------------------
 
-let cwd = "files";
+const output = document.getElementById("output");
+
 let history = [];
 let historyIndex = 0;
+let cwd = "files";
 
-input.addEventListener("keydown", async (e) => {
-    if (e.key === "Enter") {
-        let cmd = input.value.trim();
-        history.push(cmd);
-        historyIndex = history.length;
 
-        print(`uzzwal@dev:~$ ${cmd}`);
-        input.value = "";
-
-        await handleCommand(cmd);
-    }
-
-    if (e.key === "ArrowUp") {
-        if (historyIndex > 0) {
-            historyIndex--;
-            input.value = history[historyIndex];
-        }
-    }
-
-    if (e.key === "ArrowDown") {
-        if (historyIndex < history.length) {
-            historyIndex++;
-            input.value = history[historyIndex] || "";
-        }
-    }
-});
+// ------------------ PRINT FUNCTION ------------------
 
 function print(text) {
     output.innerHTML += text + "\n";
-    output.scrollTop = output.scrollHeight;
+    scrollToBottom();
 }
 
+
+// ------------------ AUTO SCROLL ------------------
+
+function scrollToBottom() {
+    setTimeout(() => {
+        output.scrollTop = output.scrollHeight;
+    }, 0);
+}
+
+
+// ------------------ CREATE NEW PROMPT (FIXED) ------------------
+
+function createNewPrompt() {
+
+    // -------------------------------------------------------------
+    // ❌ REMOVED: output.innerHTML += `<span class="prompt">uzzwal@dev:~$</span> `;
+    // -------------------------------------------------------------
+
+    const div = document.createElement("div");
+    div.className = "input-line";
+
+    // MODIFICATION: The prompt is now part of the input-line div
+    div.innerHTML = `
+        <span class="prompt">uzzwal@dev:~$</span> 
+        <input class="cmd-input" autofocus autocomplete="off">
+    `;
+
+    output.appendChild(div);
+    scrollToBottom();
+
+    const newInput = div.querySelector("input");
+    newInput.focus();
+
+    newInput.addEventListener("keydown", async (e) => {
+
+        if (e.key === "Enter") {
+            let cmd = newInput.value.trim();
+
+            history.push(cmd);
+            historyIndex = history.length;
+
+            // This correctly removes the entire line (Prompt + Input)
+            div.remove(); 
+
+            // This prints the command line once, permanently
+            print(`uzzwal@dev:~$ ${cmd}`);
+
+            await handleCommand(cmd);
+
+            // Create next prompt
+            createNewPrompt();
+        }
+
+        // ArrowUp and ArrowDown logic remains the same
+        if (e.key === "ArrowUp") {
+            if (historyIndex > 0) {
+                historyIndex--;
+                newInput.value = history[historyIndex];
+            }
+        }
+
+        if (e.key === "ArrowDown") {
+            if (historyIndex < history.length) {
+                historyIndex++;
+                newInput.value = history[historyIndex] || "";
+            }
+        }
+    });
+}
+
+// ------------------ COMMAND HANDLER ------------------
+
 async function handleCommand(cmd) {
+    if (!cmd) return;
+
     const parts = cmd.split(" ");
     const base = parts[0];
 
@@ -47,7 +98,7 @@ async function handleCommand(cmd) {
 
     else if (base === "cat") {
         let file = parts[1];
-        loadFile(file);
+        await loadFile(file);
     }
 
     else if (base === "clear") {
@@ -61,7 +112,12 @@ async function handleCommand(cmd) {
     else if (base === "sudo") {
         print("Entering admin mode...\n");
         print("Welcome Commander.\n");
-        output.innerHTML += `<img src="assets/profile.jpg" style="width:200px;border-radius:10px;margin-top:15px">`;
+
+        output.innerHTML += `
+            <img src="assets/profile.jpg" 
+                 style="width:200px;border-radius:10px;margin-top:15px">
+        `;
+        scrollToBottom();
     }
 
     else if (base === "show" && parts[1] === "skills") {
@@ -73,6 +129,9 @@ async function handleCommand(cmd) {
     }
 }
 
+
+// ------------------ LOAD FILES FROM /files FOLDER ------------------
+
 async function loadFile(file) {
     try {
         let text = await fetch(`${cwd}/${file}`).then(r => r.text());
@@ -82,19 +141,59 @@ async function loadFile(file) {
     }
 }
 
-function runPreset(filename) {
+
+// ------------------ NAV BUTTON TRIGGERS ------------------
+
+// ------------------ NAV BUTTON TRIGGERS (FINAL FIX) ------------------
+
+async function runPreset(filename) {
+    
+    // 1. Find the currently active input line (the one with the cursor).
+    // It should be the last child of the output element.
+    const activeInputLine = output.lastChild;
+    
+    // 2. CRITICAL FIX: Remove the active input line before printing the command.
+    if (activeInputLine && activeInputLine.className === "input-line") {
+        activeInputLine.remove();
+    }
+    
+    // 3. Print the executed command line in its place.
     print(`uzzwal@dev:~$ cat ${filename}`);
-    loadFile(filename);
+    
+    // 4. Wait for file content to load.
+    await loadFile(filename); 
+
+    // 5. Create the next input prompt line.
+    createNewPrompt(); 
 }
 
-function runShowSkills() {
+async function runShowSkills() {
+
+    // 1. Find the currently active input line (the one with the cursor).
+    // It should be the last child of the output element.
+    const activeInputLine = output.lastChild;
+    
+    // 2. CRITICAL FIX: Remove the active input line before printing the command.
+    if (activeInputLine && activeInputLine.className === "input-line") {
+        activeInputLine.remove();
+    }
+    
+    // 1. Print the executed command line
     print(`uzzwal@dev:~$ show skills`);
-    showSkillsUI();
+    
+    // 2. Execute the command (displays the skills UI)
+    await showSkillsUI();
+
+    // 3. CRITICAL FIX: Create the next input prompt line
+    createNewPrompt();
 }
+
+
+// ------------------ SKILLS UI ------------------
 
 function showSkillsUI() {
     print("Loading skill modules...\n");
-
+return new Promise(resolve => {
     setTimeout(() => {
         output.innerHTML += `
         <div class="skill-container">
@@ -128,6 +227,13 @@ function showSkillsUI() {
 
         </div>
         `;
-        output.scrollTop = output.scrollHeight;
+        scrollToBottom();
+        resolve();
     }, 600);
+})
 }
+
+
+// ------------------ START TERMINAL ------------------
+
+createNewPrompt();
