@@ -7,9 +7,37 @@ let historyIndex = 0;
 let cwd = "files";
 
 
-// ------------------ PRINT FUNCTION ------------------
+// ------------------ PRINT FUNCTION (Synchronous) ------------------
 
+// ------------------ TYPING ANIMATION FUNCTION (CORRECTED) ------------------
+
+async function type(text, delay = 50) { 
+    const chars = text.split("");
+    
+    // Create a NEW <div class="typed-line"> element (or similar)
+    // This will hold the text as it's being typed
+    let lineDiv = document.createElement("div"); 
+    output.appendChild(lineDiv);
+    
+    for (const char of chars) {
+        // Pause for the specified delay time
+        await new Promise(resolve => setTimeout(resolve, delay)); 
+
+        // Append the character to the div's text content
+        lineDiv.textContent += char;
+        scrollToBottom();
+    }
+    
+    // 🔥 FINAL FIX: Change the div to output the final text cleanly.
+    // Since 'lineDiv' is a block element and already on the screen, 
+    // we just need to ensure it's a permanent line of text.
+    // We don't need to touch output.innerHTML again.
+}
+
+// ------------------ PRINT FUNCTION (MODIFIED) ------------------
+// This function must now be used ONLY for non-animated, permanent output.
 function print(text) {
+    // Note: Since text already has \n, just printing the text to the output area
     output.innerHTML += text + "\n";
     scrollToBottom();
 }
@@ -28,14 +56,10 @@ function scrollToBottom() {
 
 function createNewPrompt() {
 
-    // -------------------------------------------------------------
-    // ❌ REMOVED: output.innerHTML += `<span class="prompt">uzzwal@dev:~$</span> `;
-    // -------------------------------------------------------------
-
     const div = document.createElement("div");
     div.className = "input-line";
 
-    // MODIFICATION: The prompt is now part of the input-line div
+    // Prompt and input are together in the div
     div.innerHTML = `
         <span class="prompt">uzzwal@dev:~$</span> 
         <input class="cmd-input" autofocus autocomplete="off">
@@ -55,10 +79,10 @@ function createNewPrompt() {
             history.push(cmd);
             historyIndex = history.length;
 
-            // This correctly removes the entire line (Prompt + Input)
+            // Remove the active input line
             div.remove(); 
 
-            // This prints the command line once, permanently
+            // Print the command line once, permanently
             print(`uzzwal@dev:~$ ${cmd}`);
 
             await handleCommand(cmd);
@@ -66,7 +90,7 @@ function createNewPrompt() {
             // Create next prompt
             createNewPrompt();
         }
-
+        
         // ArrowUp and ArrowDown logic remains the same
         if (e.key === "ArrowUp") {
             if (historyIndex > 0) {
@@ -84,7 +108,8 @@ function createNewPrompt() {
     });
 }
 
-// ------------------ COMMAND HANDLER ------------------
+
+// ------------------ COMMAND HANDLER (MODIFIED) ------------------
 
 async function handleCommand(cmd) {
     if (!cmd) return;
@@ -92,26 +117,35 @@ async function handleCommand(cmd) {
     const parts = cmd.split(" ");
     const base = parts[0];
 
+    let success = true;
+
     if (base === "ls") {
-        print("about-me.txt   skills.md   experience.md   projects.md   contact.txt   resume.pdf");
+        await type("about-me.txt   skills.md   experience.md   projects.md   contact.txt   resume.pdf");
     }
 
     else if (base === "cat") {
         let file = parts[1];
-        await loadFile(file);
+        await loadFile(file); 
     }
 
     else if (base === "clear") {
         output.innerHTML = "";
+        success = false; // Prevent blank line after clear
     }
 
     else if (base === "help") {
-        print("Commands:\nls\ncat <file>\nshow skills\nclear\nhelp\nsudo");
+        await type("Commands:");
+        await type("ls");
+        await type("cat <file>");
+        await type("show skills");
+        await type("clear");
+        await type("help");
+        await type("sudo");
     }
 
     else if (base === "sudo") {
-        print("Entering admin mode...\n");
-        print("Welcome Commander.\n");
+        await type("Entering admin mode...");
+        await type("Welcome Commander.");
 
         output.innerHTML += `
             <img src="assets/profile.jpg" 
@@ -121,116 +155,120 @@ async function handleCommand(cmd) {
     }
 
     else if (base === "show" && parts[1] === "skills") {
-        showSkillsUI();
+        await showSkillsUI(); // Now await showSkillsUI
     }
 
     else {
-        print(`Command not found: ${cmd}`);
+        await type(`Command not found: ${cmd}`);
+    }
+    
+    // Add a blank line after every command that isn't 'clear'
+    if (success && base !== "clear") {
+        print(""); 
     }
 }
 
 
-// ------------------ LOAD FILES FROM /files FOLDER ------------------
+// ------------------ LOAD FILES FROM /files FOLDER (MODIFIED) ------------------
 
 async function loadFile(file) {
     try {
         let text = await fetch(`${cwd}/${file}`).then(r => r.text());
-        print(text);
+        
+        // Split by newline and type each line
+        const lines = text.split('\n');
+        for (const line of lines) {
+            // Typing speed for file content (30ms)
+            await type(line, 30); 
+        }
+        
     } catch {
         print(`No such file: ${file}`);
     }
 }
 
 
-// ------------------ NAV BUTTON TRIGGERS ------------------
-
-// ------------------ NAV BUTTON TRIGGERS (FINAL FIX) ------------------
+// ------------------ NAV BUTTON TRIGGERS (MODIFIED) ------------------
 
 async function runPreset(filename) {
     
-    // 1. Find the currently active input line (the one with the cursor).
-    // It should be the last child of the output element.
     const activeInputLine = output.lastChild;
-    
-    // 2. CRITICAL FIX: Remove the active input line before printing the command.
     if (activeInputLine && activeInputLine.className === "input-line") {
         activeInputLine.remove();
     }
     
-    // 3. Print the executed command line in its place.
     print(`uzzwal@dev:~$ cat ${filename}`);
     
-    // 4. Wait for file content to load.
     await loadFile(filename); 
 
-    // 5. Create the next input prompt line.
+    // Add blank line after button command output
+    print("");
+    
     createNewPrompt(); 
 }
 
 async function runShowSkills() {
 
-    // 1. Find the currently active input line (the one with the cursor).
-    // It should be the last child of the output element.
     const activeInputLine = output.lastChild;
-    
-    // 2. CRITICAL FIX: Remove the active input line before printing the command.
     if (activeInputLine && activeInputLine.className === "input-line") {
         activeInputLine.remove();
     }
     
-    // 1. Print the executed command line
     print(`uzzwal@dev:~$ show skills`);
     
-    // 2. Execute the command (displays the skills UI)
     await showSkillsUI();
 
-    // 3. CRITICAL FIX: Create the next input prompt line
+    // Add blank line after button command output
+    print("");
+    
     createNewPrompt();
 }
 
 
-// ------------------ SKILLS UI ------------------
+// ------------------ SKILLS UI (CORRECTED & MODIFIED) ------------------
 
-function showSkillsUI() {
-    print("Loading skill modules...\n");
-return new Promise(resolve => {
-    setTimeout(() => {
-        output.innerHTML += `
-        <div class="skill-container">
+async function showSkillsUI() {
+    // Typing speed for the loading message (60ms)
+    await type("Loading skill modules...", 60); 
 
-            <div class="skill-card">
-                <div class="skill-title green">Languages / Frameworks</div>
-                <ul>
-                    <li>Java</li>
-                    <li>Python</li>
-                    <li>JavaScript</li>
-                    <li>React.js</li>
-                    <li>Spring Boot</li>
-                    <li>C++</li>
-                    <li>Flask</li>
-                    <li>Node.js</li>
-                </ul>
+    return new Promise(resolve => {
+        setTimeout(() => {
+            output.innerHTML += `
+            <div class="skill-container">
+
+                <div class="skill-card">
+                    <div class="skill-title green">Languages / Frameworks</div>
+                    <ul>
+                        <li>Java</li>
+                        <li>Python</li>
+                        <li>JavaScript</li>
+                        <li>React.js</li>
+                        <li>Spring Boot</li>
+                        <li>C++</li>
+                        <li>Flask</li>
+                        <li>Node.js</li>
+                    </ul>
+                </div>
+
+                <div class="skill-card">
+                    <div class="skill-title blue">Tools / Platforms</div>
+                    <ul>
+                        <li>Docker</li>
+                        <li>Kubernetes</li>
+                        <li>GCP / AWS</li>
+                        <li>Hadoop / Spark</li>
+                        <li>Kafka</li>
+                        <li>SQL</li>
+                        <li>Git / CI-CD</li>
+                    </ul>
+                </div>
+
             </div>
-
-            <div class="skill-card">
-                <div class="skill-title blue">Tools / Platforms</div>
-                <ul>
-                    <li>Docker</li>
-                    <li>Kubernetes</li>
-                    <li>GCP / AWS</li>
-                    <li>Hadoop / Spark</li>
-                    <li>Kafka</li>
-                    <li>SQL</li>
-                    <li>Git / CI-CD</li>
-                </ul>
-            </div>
-
-        </div>
-        `;
-        scrollToBottom();
-        resolve();
-    }, 600);
-})
+            `;
+            scrollToBottom();
+            resolve();
+        }, 600); // The HTML injection delay remains at 600ms
+    });
 }
 
 
